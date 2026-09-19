@@ -129,6 +129,7 @@
     <div class="row">
       <span class="lead" data-i18n="load">Load content to read:</span>
       <button class="btn primary" id="btnType" data-i18n="type">Type or paste</button>
+      <button class="btn" id="btnSpeak" data-i18n="speak">🎤 Speak</button>
       <button class="btn" id="btnFile" data-i18n="file">File…</button>
       <button class="btn" id="btnPhoto" data-i18n="photo">Photo…</button>
       <button class="btn" id="btnWeb" data-i18n="web">Web page…</button>
@@ -184,6 +185,25 @@
   </div>
   <div class="grp" id="voiceGroup"></div>
   <div class="grp">
+    <label><span data-i18n="speakLang">Language I speak</span>
+      <select id="speakLang">
+        <option value="auto">Auto (this device's language)</option>
+        <option value="zh-CN">中文（普通话）</option>
+        <option value="zh-TW">中文（台灣）</option>
+        <option value="yue-Hant-HK">粵語</option>
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="ja-JP">日本語</option>
+        <option value="ko-KR">한국어</option>
+        <option value="es-ES">Español</option>
+        <option value="hi-IN">हिन्दी</option>
+        <option value="ru-RU">Русский</option>
+        <option value="ar-SA">العربية</option>
+        <option value="bn-IN">বাংলা</option>
+        <option value="pt-BR">Português</option>
+        <option value="fr-FR">Français</option>
+        <option value="de-DE">Deutsch</option>
+      </select></label>
     <label><span data-i18n="ocrLang">Text language in photos</span>
       <select id="ocrLang">
         <option value="chi_sim+eng">中文 + English</option>
@@ -228,7 +248,11 @@
       webAsk:'Web address of the page:', webFetch:'Fetching…', webFail:'Could not fetch that page from the browser. Copy its text and paste it instead.',
       quota:'The free translator’s daily limit is used up; reading the original for now.', trFail:'Translation is unavailable here; reading the original.',
       stopped:'Stopped. Read aloud starts again from the beginning.', clickFirst:'Tap a sentence first.', translating:'Translating…',
-      selected:'sentences selected', theme:'Theme' },
+      selected:'sentences selected', theme:'Theme',
+      speak:'🎤 Speak', speakStop:'■ Stop listening', listening:'Listening… speak, then press Stop listening.',
+      speakLang:'Language I speak', speakDone:(n)=>`${n} sentences from your voice. Set "Listen in" to hear them in another language.`,
+      noSpeech:'This browser has no speech input. Chrome, Edge or Safari do.', micDenied:'Microphone access was refused. Allow it in the browser’s site settings.',
+      spoken:'your voice' },
     zh: { load:'读取内容：', type:'输入或粘贴', file:'文件…', photo:'拍照/图片…', web:'网页…', settings:'设置',
       startHere:'◀ 从这里开始', endHere:'到这里结束 ▶', fromHere:'从这里读', whole:'整篇', edit:'✎ 编辑文字',
       play:'▶ 朗读', pause:'❚❚ 暂停', resume:'▶ 继续', speed:'语速', settingsTitle:'语言与声音',
@@ -246,16 +270,21 @@
       webAsk:'网页地址：', webFetch:'正在获取…', webFail:'浏览器无法获取该网页。请复制网页文字后粘贴。',
       quota:'免费翻译今日额度已用完，暂时按原文朗读。', trFail:'这里无法连接翻译服务，按原文朗读。',
       stopped:'已停止。再按朗读会从头开始。', clickFirst:'先点一句。', translating:'翻译中…',
-      selected:'句已选', theme:'主题' },
+      selected:'句已选', theme:'主题',
+      speak:'🎤 语音输入', speakStop:'■ 停止录音', listening:'正在听……说完后按「停止录音」。',
+      speakLang:'我说的语言', speakDone:(n)=>`语音转成了 ${n} 句。在「用哪种语言听」里选一种语言，就能用另一种语言听。`,
+      noSpeech:'这个浏览器不支持语音输入。请用 Chrome、Edge 或 Safari。', micDenied:'麦克风权限被拒绝。请在浏览器的网站设置里允许。',
+      spoken:'语音' },
   };
   const LANG_NAMES = { en:'English', zh:'中文', 'zh-CN':'简体中文', 'zh-TW':'繁體中文', ja:'日本語', ko:'한국어', es:'Español', hi:'हिन्दी', ru:'Русский', ar:'العربية', bn:'বাংলা', pt:'Português', fr:'Français', de:'Deutsch', th:'ไทย', vi:'Tiếng Việt', it:'Italiano' };
   const LISTEN_OPTIONS = ['en','zh-CN','zh-TW','ja','ko','es','hi','ru','ar','bn','pt','fr','de'];
 
   // ---------- state ----------
-  const prefs = load('le-prefs', { size: 19, uiLang: 'auto', listenIn: '', ocrLang: 'chi_sim+eng', voices: {}, rate: 1 });
+  const prefs = load('le-prefs', { size: 19, uiLang: 'auto', listenIn: '', ocrLang: 'chi_sim+eng', speakLang: 'auto', voices: {}, rate: 1 });
   let ui = STR[prefs.uiLang === 'auto' ? (navigator.language || 'en').startsWith('zh') ? 'zh' : 'en' : prefs.uiLang];
   let sentences = [];        // { text, lang, tr }
   let source = '';
+  let isSample = false;      // the pane still shows the demo passage, not the user's text
   let startIdx = 0, endIdx = Infinity, selected = -1;
   let position = 0, state = 'idle';   // idle | playing | paused
   let current = null;                 // SpeechSynthesisUtterance in flight
@@ -363,7 +392,7 @@
   // ---------- loading ----------
   function loadText(text, src) {
     stopAll();
-    sentences = segment(text); source = src; startIdx = 0; endIdx = Infinity; selected = -1; position = 0;
+    sentences = segment(text); source = src; startIdx = 0; endIdx = Infinity; selected = -1; position = 0; isSample = false;
     editor.hidden = true; doc.hidden = false; $('btnEdit').classList.remove('on');
     renderDoc(); renderRange(); setNow(); renderVoices();
     if (sentences.length) { warnIfNoVoice(); startPlayback(0); }
@@ -488,6 +517,7 @@
     editor.focus();
   }
   function commitEditor() {
+    if (recogniser) stopDictation(false);
     const text = editor.value;
     editor.hidden = true; doc.hidden = false; $('btnEdit').classList.remove('on');
     if (text.trim() && text !== sentences.map(s => s.text).join('\n\n')) { loadText(text, ui === STR.zh ? '输入的文字' : 'typed text'); }
@@ -567,6 +597,75 @@
     } catch { setStatus(t('webFail')); }
   };
 
+  // ---------- speech input ----------
+  // Speak, and the words land in the editor as text; stop, and they are read
+  // back -- in the language you spoke, or, with "Listen in" set, in another. The
+  // browser's own recogniser (Chrome, Edge and Safari have one; Firefox does not)
+  // hands back fragments without punctuation, so each final fragment gets a full
+  // stop in the right script, which is what later cuts it into sentences.
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recogniser = null, dictated = '', interim = '';
+
+  function dictationLang() {
+    if (prefs.speakLang !== 'auto') return prefs.speakLang;
+    const l = navigator.language || 'en-US';
+    return l.length === 2 ? { zh: 'zh-CN', en: 'en-US', ja: 'ja-JP', ko: 'ko-KR', es: 'es-ES', pt: 'pt-BR', fr: 'fr-FR', de: 'de-DE', ru: 'ru-RU', ar: 'ar-SA', hi: 'hi-IN' }[l] || l : l;
+  }
+  function punctuate(fragment, lang) {
+    const s = fragment.trim();
+    if (!s) return '';
+    if (/[.!?。！？]$/.test(s)) return s;
+    return s + (/^(zh|ja)/.test(lang) ? '。' : '.');
+  }
+  function showDictation() {
+    editor.value = dictated + (interim ? (dictated ? ' ' : '') + interim : '');
+    editor.scrollTop = editor.scrollHeight;
+  }
+  function startDictation() {
+    if (!Recognition) return setStatus(t('noSpeech'));
+    stopAll();
+    if (editor.hidden) openEditor();
+    // Speech appends to your own text, never to the demo passage.
+    if (isSample) { editor.value = ''; isSample = false; }
+    dictated = editor.value.trim(); interim = '';
+    const lang = dictationLang();
+    const r = new Recognition();
+    r.lang = lang; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+    r.onresult = (e) => {
+      interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const text = e.results[i][0].transcript;
+        if (e.results[i].isFinal) dictated = (dictated ? dictated + (/^(zh|ja)/.test(lang) ? '' : ' ') : '') + punctuate(text, lang);
+        else interim += text;
+      }
+      showDictation();
+    };
+    r.onerror = (e) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setStatus(t('micDenied'));
+      else if (e.error !== 'aborted' && e.error !== 'no-speech') setStatus(`Speech input: ${e.error}`);
+      if (e.error !== 'no-speech') stopDictation(false);
+    };
+    // Chrome ends a continuous session after a silence; keep going until Stop.
+    r.onend = () => { if (recogniser === r) { try { r.start(); } catch { stopDictation(true); } } };
+    recogniser = r;
+    try { r.start(); } catch (err) { recogniser = null; return setStatus(String(err.message || err)); }
+    $('btnSpeak').textContent = t('speakStop'); $('btnSpeak').classList.add('on');
+    $('rangeLabel').textContent = t('editing'); $('rangeDetail').textContent = t('listening');
+    setStatus(`${t('listening')} (${langName(lang)})`);
+  }
+  function stopDictation(read) {
+    const r = recogniser; recogniser = null;
+    if (r) { r.onend = null; try { r.stop(); } catch {} }
+    interim = ''; showDictation();
+    $('btnSpeak').textContent = t('speak'); $('btnSpeak').classList.remove('on');
+    if (read && dictated.trim()) {
+      loadText(dictated, t('spoken'));
+      setStatus(t('speakDone', sentences.length));
+    } else { $('rangeDetail').textContent = t('editHint'); }
+  }
+  $('btnSpeak').onclick = () => recogniser ? stopDictation(true) : startDictation();
+  if (!Recognition) $('btnSpeak').title = t('noSpeech');
+
   // ---------- range ----------
   $('btnStart').onclick = () => { if (selected < 0) return setStatus(t('clickFirst')); startIdx = selected; if (endIdx < startIdx) endIdx = Infinity; renderRange(); renderDoc(); };
   $('btnEnd').onclick = () => { if (selected < 0) return setStatus(t('clickFirst')); endIdx = selected; if (endIdx < startIdx) startIdx = 0; renderRange(); renderDoc(); };
@@ -612,13 +711,14 @@
       lab.appendChild(sel); g.appendChild(lab);
     }
   }
+  $('speakLang').value = prefs.speakLang; $('speakLang').onchange = (e) => { prefs.speakLang = e.target.value; save(); };
   $('ocrLang').value = prefs.ocrLang; $('ocrLang').onchange = (e) => { prefs.ocrLang = e.target.value; save(); };
   $('uiLang').value = prefs.uiLang; $('uiLang').onchange = (e) => { prefs.uiLang = e.target.value; save(); ui = STR[prefs.uiLang === 'auto' ? (navigator.language || 'en').startsWith('zh') ? 'zh' : 'en' : prefs.uiLang]; applyStrings(); renderDoc(); setNow(); };
 
   // ---------- boot: a page at rest shows what it does ----------
   applyStrings();
   const SAMPLE = `点灯人从一根灯柱走到另一根灯柱，街道在他身后一扇窗一扇窗地亮起来。没有人看着他做这件事。\n\nThe lamplighter went from post to post, and the street came on behind him one window at a time. Nobody watched him do it. He had been at it for thirty-one years.\n\n彼は三十一年間この仕事を続けてきた。`;
-  sentences = segment(SAMPLE); source = ui === STR.zh ? '示例' : 'sample';
+  sentences = segment(SAMPLE); source = ui === STR.zh ? '示例' : 'sample'; isSample = true;
   renderDoc(); renderRange(); setNow(); renderVoices();
   setStatus(t('sample'));
   setTimeout(warnIfNoVoice, 800);
