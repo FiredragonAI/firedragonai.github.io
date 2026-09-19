@@ -1,0 +1,14 @@
+{
+  "name": "Listen Everything",
+  "short_name": "Listen",
+  "description": "Read anything aloud — typed text, files, photos, web pages — in any language, with your device's own voices.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16181D",
+  "theme_color": "#16181D",
+  "lang": "zh",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

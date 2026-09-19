@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+</head>
+<body>
+<title>Listen Everything</title>
+<meta name="description" content="Read anything aloud in your browser — typed text, files, photos, web pages — in any language, with the device's own voices.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  /* Dark-first, the same palette as the desktop app. Light tokens swap the roles. */
+  :root {
+    --bg: #16181D; --panel: #20232A; --panel-soft: #282C34; --field: #2F343D; --field-hover: #3A404B;
+    --line: #454C59; --fg: #F2F4F7; --muted: #AEB6C2; --faint: #7E8794;
+    --accent: #5B9DF9; --accent-soft: #33518A; --on-accent: #0B1017; --speaking: #2E5699; --speaking-fg: #FFFFFF;
+    --warn: #F0B429; --good: #4ED07A;
+    --ui: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    --reading: "Source Serif 4", Georgia, "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F6F9; --panel: #FFFFFF; --panel-soft: #EEF1F5; --field: #E7EBF1; --field-hover: #DDE3EB;
+    --line: #CFD6E0; --fg: #1B1F27; --muted: #5B6472; --faint: #8A93A1;
+    --accent: #2F6FD6; --accent-soft: #D6E4FA; --on-accent: #FFFFFF; --speaking: #DCE8FB; --speaking-fg: #10213D;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #F4F6F9; --panel: #FFFFFF; --panel-soft: #EEF1F5; --field: #E7EBF1; --field-hover: #DDE3EB;
+      --line: #CFD6E0; --fg: #1B1F27; --muted: #5B6472; --faint: #8A93A1;
+      --accent: #2F6FD6; --accent-soft: #D6E4FA; --on-accent: #FFFFFF; --speaking: #DCE8FB; --speaking-fg: #10213D;
+      color-scheme: light;
+    }
+  }
+
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 var(--ui); }
+  /* Stated here, not inherited: the artifact wrapper supplies this reset, a plain
+     web host does not, and .banner's display:flex would otherwise beat `hidden`. */
+  [hidden] { display: none !important; }
+  * { box-sizing: border-box; }
+  button, select, input { font: inherit; color: inherit; }
+
+  .app { display: flex; flex-direction: column; height: 100%; padding-inline: 12px; padding-block: 10px 0; gap: 10px; }
+
+  /* ---- source strip ---- */
+  .sources { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .sources .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .sources .lead { font-weight: 600; margin-right: 4px; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .btn { background: var(--field); border: 1px solid var(--line); border-radius: 7px; padding: 8px 12px; cursor: pointer; min-height: 38px; }
+  .btn:hover { background: var(--field-hover); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+  .btn.small { padding: 5px 9px; font-size: 12px; min-height: 30px; }
+  .btn.icon { min-width: 44px; padding-inline: 8px; }
+  .btn[disabled] { opacity: .45; cursor: default; }
+  .btn.on { background: var(--accent-soft); border-color: var(--accent); }
+  .btn:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---- reading pane ---- */
+  .reader { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .range { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 12px; background: var(--panel-soft); border-bottom: 1px solid var(--line); }
+  .range .label { flex: 1 1 160px; min-width: 0; }
+  .range .label b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .range .label span { color: var(--muted); font-size: 12px; }
+  .range .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .doc { flex: 1; overflow-y: auto; padding: 10px 10px 20px; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { .doc { scroll-behavior: auto; } }
+  .sentence { display: grid; grid-template-columns: 4px 1fr; gap: 10px; margin: 2px 0; cursor: pointer; }
+  .sentence .bar { border-radius: 2px; background: transparent; margin-block: 3px; }
+  .sentence .text { padding: 9px 12px; border-radius: 6px; font-family: var(--reading); font-size: var(--reading-size, 19px); line-height: 1.55; }
+  .sentence:hover .text { background: var(--panel-soft); }
+  .sentence.selected .text { background: var(--field); }
+  .sentence.selected .bar { background: var(--line); }
+  .sentence.speaking .text { background: var(--speaking); color: var(--speaking-fg); }
+  .sentence.speaking .bar { background: var(--accent); }
+  .sentence.out .text { opacity: .4; }
+  .sentence .tr { display: block; font-family: var(--ui); font-size: .8em; color: var(--accent); margin-top: 4px; }
+  .sentence.speaking .tr { color: inherit; opacity: .85; }
+
+  .editor { flex: 1; width: 100%; resize: none; border: 0; background: var(--panel); color: var(--fg); padding: 14px 18px; font: var(--reading-size, 19px)/1.55 var(--reading); }
+  .empty { margin: auto; max-width: 420px; text-align: center; color: var(--muted); padding: 24px; }
+  .empty h2 { font-size: 20px; margin: 0 0 8px; color: var(--muted); }
+
+  /* ---- player ---- */
+  .player { background: var(--panel); border: 1px solid var(--line); border-radius: 10px 10px 0 0; border-bottom: 0; padding: 10px 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .now { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.4em; }
+  .now .tr { color: var(--accent); }
+  .progress { height: 4px; background: var(--field); border-radius: 2px; margin: 8px 0 10px; overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .controls .transport { display: flex; gap: 6px; }
+  .controls .play { min-width: 120px; }
+  .speed { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+  .speed input { width: 120px; accent-color: var(--accent); }
+  .status { margin-left: auto; color: var(--muted); font-size: 12px; text-align: right; min-width: 0; flex: 1 1 140px; }
+  .status b { color: var(--fg); font-weight: 600; }
+
+  /* ---- settings sheet ---- */
+  .sheet { position: fixed; inset: auto 0 0 0; max-height: 80%; overflow-y: auto; background: var(--panel); border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 14px 16px calc(16px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -12px 40px rgba(0,0,0,.35); z-index: 20; }
+  .sheet h3 { margin: 0 0 8px; font-size: 14px; }
+  .sheet .grp { padding: 10px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+  .sheet .grp:last-child { border-bottom: 0; }
+  .sheet label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+  .sheet select { background: var(--field); border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; }
+  .sheet .rowb { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 19; }
+  @media (min-width: 720px) { .sheet { inset: auto 16px 16px auto; width: 380px; border-radius: 14px; border: 1px solid var(--line); } }
+
+  .banner { display: flex; gap: 10px; align-items: center; background: var(--accent-soft); padding: 10px 12px; font-size: 13px; }
+  .banner .msg { flex: 1; }
+
+  .sr { position: absolute; left: -9999px; }
+  input[type=file] { display: none; }
+</style>
+
+<div class="app" id="app">
+  <section class="sources" aria-label="Sources">
+    <div class="row">
+      <span class="lead" data-i18n="load">Load content to read:</span>
+      <button class="btn primary" id="btnType" data-i18n="type">Type or paste</button>
+      <button class="btn" id="btnFile" data-i18n="file">File…</button>
+      <button class="btn" id="btnPhoto" data-i18n="photo">Photo…</button>
+      <button class="btn" id="btnWeb" data-i18n="web">Web page…</button>
+      <span style="flex:1"></span>
+      <button class="btn icon" id="btnSmaller" title="Smaller text">A−</button>
+      <button class="btn icon" id="btnLarger" title="Bigger text" style="font-size:16px">A+</button>
+      <button class="btn" id="btnSettings">⚙ <span data-i18n="settings">Settings</span></button>
+    </div>
+    <div class="hint" id="hint"></div>
+    <input type="file" id="fileInput" accept=".txt,.md,.markdown,.html,.htm,.docx,.pdf,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+    <input type="file" id="photoInput" accept="image/*" capture="environment" multiple>
+  </section>
+
+  <section class="reader" aria-label="Reading pane">
+    <div class="banner" id="banner" hidden><div class="msg" id="bannerMsg"></div><button class="btn small" id="bannerClose">✕</button></div>
+    <div class="range">
+      <div class="label"><b id="rangeLabel"></b><span id="rangeDetail"></span></div>
+      <div class="tools">
+        <button class="btn small" id="btnStart" data-i18n="startHere">◀ Start here</button>
+        <button class="btn small" id="btnEnd" data-i18n="endHere">End here ▶</button>
+        <button class="btn small" id="btnFromHere" data-i18n="fromHere">Read from here</button>
+        <button class="btn small" id="btnWhole" data-i18n="whole">Whole document</button>
+        <button class="btn small" id="btnEdit" data-i18n="edit">✎ Edit text</button>
+      </div>
+    </div>
+    <div class="doc" id="doc" role="list"></div>
+    <textarea class="editor" id="editor" hidden spellcheck="false"></textarea>
+  </section>
+
+  <footer class="player" aria-label="Player">
+    <div class="now" id="now">&nbsp;</div>
+    <div class="progress"><i id="progress"></i></div>
+    <div class="controls">
+      <div class="transport">
+        <button class="btn icon" id="btnPrev" title="Previous sentence">◀◀</button>
+        <button class="btn primary play" id="btnPlay" data-i18n="play">▶ Read aloud</button>
+        <button class="btn icon" id="btnNext" title="Next sentence">▶▶</button>
+        <button class="btn icon" id="btnStop" title="Stop" disabled>■</button>
+      </div>
+      <div class="speed"><span data-i18n="speed">Speed</span> <b id="speedLabel">1.0x</b><input type="range" id="speed" min="0.5" max="2" step="0.05" value="1"></div>
+      <div class="status" id="status"></div>
+    </div>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="sheet" id="sheet" hidden aria-label="Settings">
+  <div class="rowb"><h3 data-i18n="settingsTitle">Language &amp; voice</h3><button class="btn small" id="sheetClose">✕</button></div>
+  <div class="grp">
+    <label><span data-i18n="listenIn">Listen in</span>
+      <select id="listenIn"></select></label>
+    <div class="hint" id="listenHint" style="white-space:normal"></div>
+  </div>
+  <div class="grp" id="voiceGroup"></div>
+  <div class="grp">
+    <label><span data-i18n="ocrLang">Text language in photos</span>
+      <select id="ocrLang">
+        <option value="chi_sim+eng">中文 + English</option>
+        <option value="chi_tra+eng">繁體中文 + English</option>
+        <option value="eng">English</option>
+        <option value="jpn+eng">日本語 + English</option>
+        <option value="kor+eng">한국어 + English</option>
+        <option value="rus+eng">Русский + English</option>
+        <option value="ara+eng">العربية + English</option>
+        <option value="hin+eng">हिन्दी + English</option>
+        <option value="spa+eng">Español + English</option>
+        <option value="por+eng">Português + English</option>
+      </select></label>
+    <label><span data-i18n="uiLang">Interface language</span>
+      <select id="uiLang"><option value="auto">Auto</option><option value="zh">中文</option><option value="en">English</option></select></label>
+  </div>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  // ---------- strings ----------
+  const STR = {
+    en: { load:'Load content to read:', type:'Type or paste', file:'File…', photo:'Photo…', web:'Web page…', settings:'Settings',
+      startHere:'◀ Start here', endHere:'End here ▶', fromHere:'Read from here', whole:'Whole document', edit:'✎ Edit text',
+      play:'▶ Read aloud', pause:'❚❚ Pause', resume:'▶ Resume', speed:'Speed', settingsTitle:'Language & voice',
+      listenIn:'Listen in', original:'Original language(s) — no translation', ocrLang:'Text language in photos', uiLang:'Interface language',
+      hint:'Paste text, open a file or photo, or give a web address. Read with this device’s own voices, in any language.',
+      nothing:'Nothing to read yet', emptyBody:'Tap a source above — type, a file, a photo, a web page.',
+      sample:'Sample text. Replace it with anything.', editing:'Editing', editHint:'Type or paste. Press Read aloud, or Edit text again, when done.',
+      whole_of:(n)=>`Reading: the whole document — all ${n} sentences`, range_of:(a,b,n)=>`Reading: sentence ${a} to ${b} — ${b-a+1} of ${n}`,
+      found:(n,src)=>`${n} sentences from ${src}. Tap one, then Start here / End here.`,
+      reading:(i,n,l)=>`Reading ${i} of ${n} · ${l}`, paused:(i,n)=>`Paused at ${i} of ${n}`, notReading:'Not reading', finished:'Finished.',
+      noVoice:(l)=>`This device has no ${l} voice. Add one in the phone’s settings (Text-to-speech), then reopen this page.`,
+      voiceFor:(l)=>`Voice for ${l}`, auto:'Automatic (best match)',
+      reading_file:(f)=>`Reading ${f}…`, noText:(f)=>`No readable text in ${f}.`, ocr:(n)=>`Recognising photo ${n}…`, ocrDone:(n,c)=>`Photo ${n}: ${c} characters.`,
+      ocrFail:'Text recognition could not load here (it downloads its engine from the network). It works when this page is opened from a normal web address.',
+      webAsk:'Web address of the page:', webFetch:'Fetching…', webFail:'Could not fetch that page from the browser. Copy its text and paste it instead.',
+      quota:'The free translator’s daily limit is used up; reading the original for now.', trFail:'Translation is unavailable here; reading the original.',
+      stopped:'Stopped. Read aloud starts again from the beginning.', clickFirst:'Tap a sentence first.', translating:'Translating…',
+      selected:'sentences selected', theme:'Theme' },
+    zh: { load:'读取内容：', type:'输入或粘贴', file:'文件…', photo:'拍照/图片…', web:'网页…', settings:'设置',
+      startHere:'◀ 从这里开始', endHere:'到这里结束 ▶', fromHere:'从这里读', whole:'整篇', edit:'✎ 编辑文字',
+      play:'▶ 朗读', pause:'❚❚ 暂停', resume:'▶ 继续', speed:'语速', settingsTitle:'语言与声音',
+      listenIn:'用哪种语言听', original:'原文语言——不翻译', ocrLang:'图片里的文字语言', uiLang:'界面语言',
+      hint:'粘贴文字、打开文件或照片、或输入网址。用这台设备自带的声音朗读，任何语言。',
+      nothing:'还没有内容', emptyBody:'点上面的来源——输入、文件、照片、网页。',
+      sample:'示例文字，可以替换成任何内容。', editing:'编辑中', editHint:'输入或粘贴。完成后按「朗读」或再点「编辑文字」。',
+      whole_of:(n)=>`朗读：整篇 — 共 ${n} 句`, range_of:(a,b,n)=>`朗读：第 ${a} 到 ${b} 句 — ${b-a+1} / ${n}`,
+      found:(n,src)=>`来自${src}的 ${n} 句。点一句，再选「从这里开始 / 到这里结束」。`,
+      reading:(i,n,l)=>`正在读 ${i} / ${n} · ${l}`, paused:(i,n)=>`暂停在 ${i} / ${n}`, notReading:'未朗读', finished:'读完了。',
+      noVoice:(l)=>`这台设备没有${l}语音。请在手机设置（文字转语音）里添加，然后重新打开本页。`,
+      voiceFor:(l)=>`${l}用哪个声音`, auto:'自动（最匹配）',
+      reading_file:(f)=>`正在读取 ${f}…`, noText:(f)=>`${f} 里没有可读的文字。`, ocr:(n)=>`正在识别第 ${n} 张图片…`, ocrDone:(n,c)=>`第 ${n} 张：${c} 个字符。`,
+      ocrFail:'文字识别在这里加载不了（它需要从网络下载识别引擎）。把本页放到普通网址打开即可使用。',
+      webAsk:'网页地址：', webFetch:'正在获取…', webFail:'浏览器无法获取该网页。请复制网页文字后粘贴。',
+      quota:'免费翻译今日额度已用完，暂时按原文朗读。', trFail:'这里无法连接翻译服务，按原文朗读。',
+      stopped:'已停止。再按朗读会从头开始。', clickFirst:'先点一句。', translating:'翻译中…',
+      selected:'句已选', theme:'主题' },
+  };
+  const LANG_NAMES = { en:'English', zh:'中文', 'zh-CN':'简体中文', 'zh-TW':'繁體中文', ja:'日本語', ko:'한국어', es:'Español', hi:'हिन्दी', ru:'Русский', ar:'العربية', bn:'বাংলা', pt:'Português', fr:'Français', de:'Deutsch', th:'ไทย', vi:'Tiếng Việt', it:'Italiano' };
+  const LISTEN_OPTIONS = ['en','zh-CN','zh-TW','ja','ko','es','hi','ru','ar','bn','pt','fr','de'];
+
+  // ---------- state ----------
+  const prefs = load('le-prefs', { size: 19, uiLang: 'auto', listenIn: '', ocrLang: 'chi_sim+eng', voices: {}, rate: 1 });
+  let ui = STR[prefs.uiLang === 'auto' ? (navigator.language || 'en').startsWith('zh') ? 'zh' : 'en' : prefs.uiLang];
+  let sentences = [];        // { text, lang, tr }
+  let source = '';
+  let startIdx = 0, endIdx = Infinity, selected = -1;
+  let position = 0, state = 'idle';   // idle | playing | paused
+  let current = null;                 // SpeechSynthesisUtterance in flight
+  let generation = 0;
+  const trCache = new Map();
+  let trWarned = false;
+
+  const $ = (id) => document.getElementById(id);
+  const doc = $('doc'), editor = $('editor');
+
+  function load(key, fallback) { try { return Object.assign({}, fallback, JSON.parse(localStorage.getItem(key) || '{}')); } catch { return fallback; } }
+  function save() { try { localStorage.setItem('le-prefs', JSON.stringify(prefs)); } catch {} }
+
+  // ---------- language detection by script ----------
+  function detect(text) {
+    const count = (re) => (text.match(re) || []).length;
+    const han = count(/[一-鿿]/g), kana = count(/[぀-ヿ]/g), hangul = count(/[가-힯]/g);
+    const cyr = count(/[Ѐ-ӿ]/g), arab = count(/[؀-ۿ]/g), deva = count(/[ऀ-ॿ]/g), beng = count(/[ঀ-৿]/g), thai = count(/[฀-๿]/g);
+    const latin = count(/[A-Za-zÀ-ɏ]/g);
+    const best = Math.max(han + kana, hangul, cyr, arab, deva, beng, thai, latin);
+    if (best === 0) return 'en';
+    if (kana > 0 && kana + han >= best) return 'ja';
+    if (han >= best) return /[龘繁體語圖學國麼]/.test(text) ? 'zh-TW' : 'zh-CN';
+    if (hangul >= best) return 'ko';
+    if (cyr >= best) return 'ru';
+    if (arab >= best) return 'ar';
+    if (deva >= best) return 'hi';
+    if (beng >= best) return 'bn';
+    if (thai >= best) return 'th';
+    if (/[ñ¿¡]/i.test(text) || /\b(el|la|los|las|que|para|con)\b/i.test(text) && /\b(y|de)\b/i.test(text) && !/\b(the|and)\b/i.test(text)) return 'es';
+    if (/[ãõç]/i.test(text) && !/\b(the|and)\b/i.test(text)) return 'pt';
+    if (/[éèêàçù]/i.test(text) && /\b(le|les|des|est|une)\b/i.test(text)) return 'fr';
+    if (/[äöüß]/i.test(text) && /\b(der|die|das|und|ist)\b/i.test(text)) return 'de';
+    return 'en';
+  }
+  const langName = (l) => LANG_NAMES[l] || LANG_NAMES[l.split('-')[0]] || l;
+
+  // ---------- segmentation: by punctuation, never by line numbers ----------
+  function segment(text) {
+    const paras = text.replace(/\r/g, '').split(/\n\s*\n|\n(?=\s*[-•*\d]+[.)]?\s)/);
+    const out = [];
+    for (const p of paras) {
+      const flat = p.replace(/\s*\n\s*/g, ' ').trim();
+      if (!flat) continue;
+      const parts = flat.replace(/([。！？；])/g, '$1<<|>>').replace(/([.!?])(?=\s|$)/g, '$1<<|>>').split('<<|>>');
+      for (const s of parts) { const t = s.trim(); if (t.length > 1) out.push({ text: t, lang: detect(t), tr: null }); }
+    }
+    return out;
+  }
+
+  // ---------- rendering ----------
+  function t(key, ...a) { const v = ui[key]; return typeof v === 'function' ? v(...a) : v; }
+  function applyStrings() {
+    document.querySelectorAll('[data-i18n]').forEach(el => { const v = ui[el.dataset.i18n]; if (typeof v === 'string') el.textContent = v; });
+    $('hint').textContent = t('hint');
+    $('listenIn').innerHTML = `<option value="">${t('original')}</option>` + LISTEN_OPTIONS.map(l => `<option value="${l}">${langName(l)} — ${LANG_NAMES[l] === langName(l) ? l : ''}</option>`).join('');
+    $('listenIn').value = prefs.listenIn;
+    document.documentElement.lang = ui === STR.zh ? 'zh' : 'en';
+    renderRange(); renderVoices(); updateListenHint();
+  }
+
+  function renderDoc() {
+    doc.innerHTML = '';
+    if (!sentences.length) {
+      doc.innerHTML = `<div class="empty"><h2>${t('nothing')}</h2><p>${t('emptyBody')}</p></div>`;
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    sentences.forEach((s, i) => {
+      const row = document.createElement('div');
+      row.className = 'sentence' + (i === selected ? ' selected' : '') + (i < startIdx || i > endIdx ? ' out' : '') + (i === position && state !== 'idle' ? ' speaking' : '');
+      row.role = 'listitem'; row.dataset.i = i;
+      row.innerHTML = `<span class="bar"></span><span class="text"></span>`;
+      row.querySelector('.text').textContent = s.text;
+      if (s.tr) { const tr = document.createElement('span'); tr.className = 'tr'; tr.textContent = s.tr; row.querySelector('.text').appendChild(tr); }
+      row.addEventListener('click', () => { selected = i; renderDoc(); });
+      row.addEventListener('dblclick', () => readFrom(i));
+      frag.appendChild(row);
+    });
+    doc.appendChild(frag);
+  }
+  function markSpeaking() {
+    doc.querySelectorAll('.sentence').forEach(el => el.classList.toggle('speaking', +el.dataset.i === position && state !== 'idle'));
+    const el = doc.querySelector(`.sentence[data-i="${position}"]`);
+    if (el) el.scrollIntoView({ block: 'center' });
+  }
+  function renderRange() {
+    const n = sentences.length;
+    const end = Math.min(endIdx, n - 1);
+    $('rangeLabel').textContent = !n ? t('nothing') : (startIdx === 0 && endIdx === Infinity) ? t('whole_of', n) : t('range_of', startIdx + 1, end + 1, n);
+    $('rangeDetail').textContent = n ? t('found', n, source) : '';
+  }
+  function setStatus(msg) { $('status').textContent = msg; }
+  function setNow() {
+    const n = sentences.length, s = sentences[position];
+    $('now').innerHTML = '';
+    if (s && state !== 'idle') { $('now').textContent = s.text; if (s.tr) { const tr = document.createElement('span'); tr.className = 'tr'; tr.textContent = '  ' + s.tr; $('now').appendChild(tr); } }
+    else $('now').innerHTML = '&nbsp;';
+    $('progress').style.width = n ? `${((state === 'idle' ? 0 : position + 1) / n) * 100}%` : '0';
+    $('btnPlay').textContent = state === 'playing' ? t('pause') : state === 'paused' ? t('resume') : t('play');
+    $('btnStop').disabled = state === 'idle';
+    if (state === 'idle') setStatus(t('notReading'));
+  }
+
+  // ---------- loading ----------
+  function loadText(text, src) {
+    stopAll();
+    sentences = segment(text); source = src; startIdx = 0; endIdx = Infinity; selected = -1; position = 0;
+    editor.hidden = true; doc.hidden = false; $('btnEdit').classList.remove('on');
+    renderDoc(); renderRange(); setNow(); renderVoices();
+    if (sentences.length) { warnIfNoVoice(); startPlayback(0); }
+  }
+
+  // ---------- speech ----------
+  const synth = window.speechSynthesis;
+  let voices = [];
+  function refreshVoices() { voices = synth ? synth.getVoices() : []; renderVoices(); }
+  if (synth) { refreshVoices(); synth.onvoiceschanged = refreshVoices; }
+
+  function voicesFor(lang) {
+    const base = lang.split('-')[0].toLowerCase();
+    const list = voices.filter(v => v.lang.toLowerCase().replace('_', '-').startsWith(base));
+    if (base === 'zh') {
+      const trad = lang.includes('TW') || lang.includes('Hant') || lang.includes('HK');
+      const sub = list.filter(v => trad ? /tw|hk|hant/i.test(v.lang) : /cn|hans|sg/i.test(v.lang));
+      if (sub.length) return sub;
+    }
+    return list;
+  }
+  function pickVoice(lang) {
+    const chosen = prefs.voices[lang.split('-')[0]];
+    if (chosen) { const v = voices.find(v => v.voiceURI === chosen); if (v) return v; }
+    const list = voicesFor(lang);
+    if (!list.length) return null;
+    const score = (v) => (/natural|premium|enhanced|neural/i.test(v.name) ? 4 : 0) + (/google|microsoft|siri|apple/i.test(v.name) ? 2 : 0) + (v.lang.toLowerCase() === lang.toLowerCase() ? 1 : 0);
+    return list.slice().sort((a, b) => score(b) - score(a))[0];
+  }
+  function languagesInUse() {
+    const set = new Set(sentences.map(s => (prefs.listenIn || s.lang).split('-')[0]));
+    if (prefs.listenIn) set.add(prefs.listenIn.split('-')[0]);
+    return [...set];
+  }
+  function warnIfNoVoice() {
+    const missing = languagesInUse().filter(l => !voicesFor(l).length);
+    if (missing.length && voices.length) showBanner(t('noVoice', missing.map(langName).join(', ')));
+  }
+  function showBanner(msg) { $('bannerMsg').textContent = msg; $('banner').hidden = false; }
+  $('bannerClose').onclick = () => { $('banner').hidden = true; };
+
+  function speakSentence(i, gen) {
+    return new Promise(async (resolve) => {
+      const s = sentences[i];
+      let text = s.text, lang = s.lang;
+      if (prefs.listenIn && prefs.listenIn.split('-')[0] !== s.lang.split('-')[0]) {
+        const tr = await translate(s.text, s.lang, prefs.listenIn);
+        if (gen !== generation) return resolve(false);
+        if (tr) { s.tr = tr; text = tr; lang = prefs.listenIn; renderDoc(); }
+      }
+      if (!synth) { setStatus('No speech synthesis in this browser.'); return resolve(false); }
+      const u = new SpeechSynthesisUtterance(text);
+      const v = pickVoice(lang);
+      if (v) u.voice = v;
+      u.lang = v ? v.lang : lang;
+      u.rate = prefs.rate;
+      u.onend = () => resolve(true);
+      u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') setStatus(`Voice error: ${e.error}`); resolve(e.error === 'interrupted' || e.error === 'canceled' ? null : false); };
+      current = u;
+      setStatus(`${langName(lang)} · ${v ? v.name : 'default voice'}`);
+      synth.speak(u);
+    });
+  }
+
+  async function run(gen) {
+    state = 'playing'; setNow(); markSpeaking();
+    const last = Math.min(endIdx, sentences.length - 1);
+    while (gen === generation && position <= last) {
+      setNow(); markSpeaking();
+      $('status').innerHTML = `<b>${t('reading', position + 1, sentences.length, langName(prefs.listenIn || sentences[position].lang))}</b>`;
+      const ok = await speakSentence(position, gen);
+      if (gen !== generation) return;
+      if (ok === null) return;               // interrupted by pause/stop/skip; whoever did it owns the state
+      position++;
+    }
+    if (gen === generation) { state = 'idle'; position = Math.max(startIdx, 0); setNow(); markSpeaking(); setStatus(t('finished')); }
+  }
+  function startPlayback(from) {
+    if (!sentences.length) return;
+    generation++; if (synth) synth.cancel();
+    position = Math.max(startIdx, Math.min(from ?? startIdx, sentences.length - 1));
+    run(generation);
+  }
+  function pause() {
+    if (state !== 'playing') return;
+    generation++; if (synth) synth.cancel();
+    state = 'paused'; setNow(); markSpeaking();
+    setStatus(t('paused', position + 1, sentences.length));
+  }
+  function resume() { if (state !== 'paused') return; run(++generation); }
+  function stopAll() { generation++; if (synth) synth.cancel(); state = 'idle'; position = startIdx; setNow(); markSpeaking(); }
+  function jump(delta) {
+    if (!sentences.length) return;
+    const last = Math.min(endIdx, sentences.length - 1);
+    const to = Math.max(startIdx, Math.min(last, position + delta));
+    position = to; startPlaybackAt(to);
+  }
+  function startPlaybackAt(i) { generation++; if (synth) synth.cancel(); position = i; run(generation); }
+  function readFrom(i) { startIdx = Math.min(startIdx, i); if (endIdx < i) endIdx = Infinity; renderRange(); renderDoc(); startPlaybackAt(i); }
+
+  // ---------- translation (MyMemory, free, no key) ----------
+  async function translate(text, from, to) {
+    const key = `${from}|${to}|${text}`;
+    if (trCache.has(key)) return trCache.get(key);
+    try {
+      const pair = `${from.split('-')[0] === 'zh' ? (from.includes('TW') ? 'zh-TW' : 'zh-CN') : from.split('-')[0]}|${to}`;
+      const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 450))}&langpair=${encodeURIComponent(pair)}`);
+      const j = await r.json();
+      const out = j?.responseData?.translatedText || '';
+      if (/MYMEMORY WARNING|QUERY LENGTH/i.test(out)) { if (!trWarned) { trWarned = true; showBanner(t('quota')); } return null; }
+      trCache.set(key, out); return out;
+    } catch { if (!trWarned) { trWarned = true; showBanner(t('trFail')); } return null; }
+  }
+
+  // ---------- sources ----------
+  $('btnType').onclick = () => openEditor();
+  function openEditor() {
+    stopAll();
+    editor.value = sentences.map(s => s.text).join('\n\n');
+    editor.hidden = false; doc.hidden = true; $('btnEdit').classList.add('on');
+    $('rangeLabel').textContent = t('editing'); $('rangeDetail').textContent = t('editHint');
+    editor.focus();
+  }
+  function commitEditor() {
+    const text = editor.value;
+    editor.hidden = true; doc.hidden = false; $('btnEdit').classList.remove('on');
+    if (text.trim() && text !== sentences.map(s => s.text).join('\n\n')) { loadText(text, ui === STR.zh ? '输入的文字' : 'typed text'); }
+    else { renderRange(); renderDoc(); }
+  }
+  $('btnEdit').onclick = () => editor.hidden ? openEditor() : commitEditor();
+
+  $('btnFile').onclick = () => $('fileInput').click();
+  $('fileInput').onchange = async (e) => {
+    const f = e.target.files[0]; if (!f) return; e.target.value = '';
+    setStatus(t('reading_file', f.name));
+    try {
+      let text = '';
+      if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf') text = await readPdf(f);
+      else if (/\.docx$/i.test(f.name)) text = (await mammoth.extractRawText({ arrayBuffer: await f.arrayBuffer() })).value;
+      else if (/\.html?$/i.test(f.name)) { const d = new DOMParser().parseFromString(await f.text(), 'text/html'); d.querySelectorAll('script,style,nav,header,footer,aside').forEach(n => n.remove()); text = d.body.innerText; }
+      else text = await f.text();
+      if (!text.trim()) return setStatus(t('noText', f.name));
+      loadText(text, f.name);
+    } catch (err) { setStatus(`${f.name}: ${err.message}`); }
+  };
+  async function readPdf(file) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const pages = [];
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const content = await (await pdf.getPage(p)).getTextContent();
+      // Lines by y-position, then paragraphs by punctuation -- never one line per row.
+      let line = '', lastY = null, lines = [];
+      for (const it of content.items) { const y = Math.round(it.transform[5]); if (lastY !== null && Math.abs(y - lastY) > 2) { lines.push(line); line = ''; } line += it.str; lastY = y; }
+      lines.push(line);
+      pages.push(lines.join(/[一-鿿]/.test(lines.join('')) ? '' : ' '));
+    }
+    return pages.join('\n\n');
+  }
+
+  $('btnPhoto').onclick = () => $('photoInput').click();
+  $('photoInput').onchange = async (e) => {
+    const files = [...e.target.files]; e.target.value = ''; if (!files.length) return;
+    let worker;
+    try {
+      setStatus(t('ocr', 1));
+      worker = await Tesseract.createWorker(prefs.ocrLang, 1, {
+        workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js',
+        corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0',
+        langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+        logger: (m) => { if (m.status === 'recognizing text') setStatus(`${t('ocr', 1)} ${Math.round(m.progress * 100)}%`); },
+      });
+      const texts = [];
+      for (let i = 0; i < files.length; i++) {
+        setStatus(t('ocr', i + 1));
+        const { data } = await worker.recognize(files[i]);
+        const text = data.text.replace(/(?<=[　-鿿])\s+(?=[　-鿿])/g, '').trim();
+        setStatus(t('ocrDone', i + 1, text.length));
+        if (text) texts.push(text);
+      }
+      if (!texts.length) return setStatus(t('noText', files[0].name));
+      loadText(texts.join('\n\n'), files.length === 1 ? (ui === STR.zh ? '照片' : 'photo') : `${files.length} ${ui === STR.zh ? '张照片' : 'photos'}`);
+    } catch (err) { showBanner(t('ocrFail')); setStatus(String(err.message || err)); }
+    finally { try { await worker?.terminate(); } catch {} }
+  };
+
+  $('btnWeb').onclick = async () => {
+    let url = prompt(t('webAsk'), '');
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url.trim();
+    setStatus(t('webFetch'));
+    try {
+      // r.jina.ai returns the article of any public page as plain text, with
+      // permission for browsers to read it -- the page itself almost never does.
+      const r = await fetch('https://r.jina.ai/' + url, { headers: { Accept: 'text/plain' } });
+      if (!r.ok) throw new Error(r.status);
+      let text = await r.text();
+      text = text.replace(/^Title:.*\n|^URL Source:.*\n|^Markdown Content:\n/gm, '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/^#+\s*/gm, '').replace(/[*_`>]/g, '');
+      if (!text.trim()) throw new Error('empty');
+      loadText(text, new URL(url).host);
+    } catch { setStatus(t('webFail')); }
+  };
+
+  // ---------- range ----------
+  $('btnStart').onclick = () => { if (selected < 0) return setStatus(t('clickFirst')); startIdx = selected; if (endIdx < startIdx) endIdx = Infinity; renderRange(); renderDoc(); };
+  $('btnEnd').onclick = () => { if (selected < 0) return setStatus(t('clickFirst')); endIdx = selected; if (endIdx < startIdx) startIdx = 0; renderRange(); renderDoc(); };
+  $('btnFromHere').onclick = () => { if (selected < 0) return setStatus(t('clickFirst')); readFrom(selected); };
+  $('btnWhole').onclick = () => { startIdx = 0; endIdx = Infinity; renderRange(); renderDoc(); };
+
+  // ---------- transport ----------
+  $('btnPlay').onclick = () => { if (!editor.hidden) commitEditor(); if (state === 'playing') pause(); else if (state === 'paused') resume(); else startPlayback(startIdx); };
+  $('btnStop').onclick = () => { stopAll(); setStatus(t('stopped')); };
+  $('btnPrev').onclick = () => jump(-1);
+  $('btnNext').onclick = () => jump(+1);
+  $('speed').value = prefs.rate; $('speedLabel').textContent = `${Number(prefs.rate).toFixed(1)}x`;
+  $('speed').oninput = (e) => { prefs.rate = +e.target.value; $('speedLabel').textContent = `${prefs.rate.toFixed(1)}x`; save(); };
+
+  // ---------- font size ----------
+  const applySize = () => document.documentElement.style.setProperty('--reading-size', `${prefs.size}px`);
+  $('btnSmaller').onclick = () => { prefs.size = Math.max(13, prefs.size - 1); applySize(); save(); };
+  $('btnLarger').onclick = () => { prefs.size = Math.min(40, prefs.size + 1); applySize(); save(); };
+  applySize();
+
+  // ---------- settings ----------
+  const openSheet = (on) => { $('sheet').hidden = !on; $('scrim').hidden = !on; if (on) renderVoices(); };
+  $('btnSettings').onclick = () => openSheet(true);
+  $('sheetClose').onclick = $('scrim').onclick = () => openSheet(false);
+  $('listenIn').onchange = (e) => { prefs.listenIn = e.target.value; save(); sentences.forEach(s => s.tr = null); renderDoc(); updateListenHint(); renderVoices(); warnIfNoVoice(); };
+  function updateListenHint() {
+    $('listenHint').textContent = prefs.listenIn
+      ? (ui === STR.zh ? `全部翻译成${langName(prefs.listenIn)}再朗读（MyMemory，免费）。` : `Everything is translated into ${langName(prefs.listenIn)} and read in it (MyMemory, free).`)
+      : (ui === STR.zh ? '每句按它本来的语言朗读。' : 'Each sentence is read in the language it is written in.');
+  }
+  function renderVoices() {
+    const g = $('voiceGroup'); g.innerHTML = '';
+    const langs = languagesInUse().length ? languagesInUse() : ['en'];
+    for (const l of langs) {
+      const list = voicesFor(l);
+      const lab = document.createElement('label');
+      lab.innerHTML = `<span>${t('voiceFor', langName(l))}</span>`;
+      const sel = document.createElement('select');
+      sel.innerHTML = `<option value="">${t('auto')}</option>` + list.map(v => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('');
+      sel.value = prefs.voices[l] || '';
+      sel.onchange = () => { prefs.voices[l] = sel.value; save(); };
+      if (!list.length) { const w = document.createElement('div'); w.className = 'hint'; w.style.whiteSpace = 'normal'; w.style.color = 'var(--warn)'; w.textContent = t('noVoice', langName(l)); lab.appendChild(w); }
+      lab.appendChild(sel); g.appendChild(lab);
+    }
+  }
+  $('ocrLang').value = prefs.ocrLang; $('ocrLang').onchange = (e) => { prefs.ocrLang = e.target.value; save(); };
+  $('uiLang').value = prefs.uiLang; $('uiLang').onchange = (e) => { prefs.uiLang = e.target.value; save(); ui = STR[prefs.uiLang === 'auto' ? (navigator.language || 'en').startsWith('zh') ? 'zh' : 'en' : prefs.uiLang]; applyStrings(); renderDoc(); setNow(); };
+
+  // ---------- boot: a page at rest shows what it does ----------
+  applyStrings();
+  const SAMPLE = `点灯人从一根灯柱走到另一根灯柱，街道在他身后一扇窗一扇窗地亮起来。没有人看着他做这件事。\n\nThe lamplighter went from post to post, and the street came on behind him one window at a time. Nobody watched him do it. He had been at it for thirty-one years.\n\n彼は三十一年間この仕事を続けてきた。`;
+  sentences = segment(SAMPLE); source = ui === STR.zh ? '示例' : 'sample';
+  renderDoc(); renderRange(); setNow(); renderVoices();
+  setStatus(t('sample'));
+  setTimeout(warnIfNoVoice, 800);
+})();
+</script>
+</body>
+</html>
