@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B3261E"/>
+      <stop offset="1" stop-color="#6E0F0B"/>
+    </linearGradient>
+    <linearGradient id="lan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF6A4D"/>
+      <stop offset="1" stop-color="#C8271A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 灯笼 ×2,挂在右上 -->
+  <g transform="translate(860 40)">
+    <line x1="0" y1="0" x2="0" y2="70" stroke="#F2C94C" stroke-width="4"/>
+    <rect x="-16" y="70" width="32" height="14" rx="4" fill="#F2C94C"/>
+    <ellipse cx="0" cy="170" rx="84" ry="96" fill="url(#lan)"/>
+    <ellipse cx="0" cy="170" rx="56" ry="96" fill="none" stroke="#F2C94C" stroke-opacity="0.45" stroke-width="3"/>
+    <ellipse cx="0" cy="170" rx="24" ry="96" fill="none" stroke="#F2C94C" stroke-opacity="0.45" stroke-width="3"/>
+    <rect x="-16" y="256" width="32" height="14" rx="4" fill="#F2C94C"/>
+    <line x1="0" y1="270" x2="0" y2="340" stroke="#F2C94C" stroke-width="4"/>
+    <path d="M-10 340 L10 340 L6 400 L-6 400 Z" fill="#F2C94C"/>
+  </g>
+  <g transform="translate(720 0)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#F2C94C" stroke-width="4"/>
+    <rect x="-12" y="40" width="24" height="12" rx="4" fill="#F2C94C"/>
+    <ellipse cx="0" cy="110" rx="60" ry="70" fill="url(#lan)"/>
+    <ellipse cx="0" cy="110" rx="40" ry="70" fill="none" stroke="#F2C94C" stroke-opacity="0.45" stroke-width="3"/>
+    <rect x="-12" y="172" width="24" height="12" rx="4" fill="#F2C94C"/>
+    <line x1="0" y1="184" x2="0" y2="230" stroke="#F2C94C" stroke-width="4"/>
+    <path d="M-8 230 L8 230 L5 276 L-5 276 Z" fill="#F2C94C"/>
+  </g>
+  <!-- 底部祥云 -->
+  <g fill="#F2C94C" fill-opacity="0.16">
+    <circle cx="120" cy="1250" r="90"/><circle cx="230" cy="1210" r="120"/><circle cx="370" cy="1250" r="100"/>
+    <circle cx="760" cy="1290" r="80"/><circle cx="860" cy="1250" r="110"/><circle cx="980" cy="1290" r="90"/>
+  </g>
+  <rect x="0" y="1290" width="1080" height="60" fill="#F2C94C" fill-opacity="0.16"/>
+  <!-- 金点 -->
+  <g fill="#F2C94C" fill-opacity="0.7">
+    <circle cx="90" cy="120" r="5"/><circle cx="160" cy="70" r="3"/><circle cx="560" cy="60" r="4"/>
+    <circle cx="640" cy="150" r="3"/><circle cx="1010" cy="420" r="4"/><circle cx="60" cy="900" r="4"/>
+  </g>
+  <!-- 细边框 -->
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#F2C94C" stroke-opacity="0.6" stroke-width="3"/>
+</svg>

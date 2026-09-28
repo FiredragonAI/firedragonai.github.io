@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E1A3A"/>
+      <stop offset="1" stop-color="#1F2F5C"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F7E3A1" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#F7E3A1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B3F72"/>
+      <stop offset="1" stop-color="#101A38"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <circle cx="840" cy="230" r="300" fill="url(#glow)"/>
+  <circle cx="840" cy="230" r="150" fill="#F7E3A1"/>
+  <circle cx="800" cy="200" r="22" fill="#E9D28C" fill-opacity="0.6"/>
+  <circle cx="880" cy="270" r="14" fill="#E9D28C" fill-opacity="0.6"/>
+  <!-- 星 -->
+  <g fill="#FFFFFF" fill-opacity="0.8">
+    <circle cx="120" cy="140" r="3"/><circle cx="260" cy="80" r="2"/><circle cx="420" cy="180" r="2.5"/>
+    <circle cx="560" cy="70" r="2"/><circle cx="640" cy="330" r="2"/><circle cx="1010" cy="480" r="2.5"/>
+    <circle cx="80" cy="420" r="2"/><circle cx="300" cy="300" r="1.5"/>
+  </g>
+  <!-- 远山 -->
+  <path d="M0 1120 Q160 1000 320 1080 Q480 1160 640 1040 Q800 940 1080 1080 L1080 1350 L0 1350 Z" fill="url(#hill)"/>
+  <path d="M0 1200 Q200 1120 400 1180 Q600 1240 800 1150 Q950 1090 1080 1170 L1080 1350 L0 1350 Z" fill="#0B1330"/>
+  <!-- 桂花点 -->
+  <g fill="#F2C94C" fill-opacity="0.75">
+    <circle cx="960" cy="620" r="6"/><circle cx="990" cy="650" r="4"/><circle cx="940" cy="670" r="5"/><circle cx="1010" cy="700" r="3"/>
+  </g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#F7E3A1" stroke-opacity="0.45" stroke-width="2"/>
+</svg>

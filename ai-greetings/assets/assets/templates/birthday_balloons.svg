@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#DDEFFB"/>
+      <stop offset="1" stop-color="#F7FBFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 气球 -->
+  <g>
+    <path d="M900 330 Q880 420 860 520" fill="none" stroke="#6B7280" stroke-width="3"/>
+    <ellipse cx="900" cy="230" rx="80" ry="100" fill="#F28CA0"/>
+    <ellipse cx="875" cy="195" rx="18" ry="30" fill="#FFFFFF" fill-opacity="0.45"/>
+    <path d="M892 328 L908 328 L900 342 Z" fill="#F28CA0"/>
+  </g>
+  <g>
+    <path d="M1000 400 Q990 480 960 560" fill="none" stroke="#6B7280" stroke-width="3"/>
+    <ellipse cx="1000" cy="300" rx="65" ry="82" fill="#F2D06B"/>
+    <ellipse cx="980" cy="270" rx="14" ry="24" fill="#FFFFFF" fill-opacity="0.45"/>
+    <path d="M993 380 L1007 380 L1000 392 Z" fill="#F2D06B"/>
+  </g>
+  <g>
+    <path d="M770 300 Q790 400 810 500" fill="none" stroke="#6B7280" stroke-width="3"/>
+    <ellipse cx="770" cy="200" rx="60" ry="76" fill="#8FC7E8"/>
+    <ellipse cx="752" cy="172" rx="13" ry="22" fill="#FFFFFF" fill-opacity="0.45"/>
+    <path d="M763 274 L777 274 L770 286 Z" fill="#8FC7E8"/>
+  </g>
+  <g>
+    <ellipse cx="120" cy="1180" rx="50" ry="64" fill="#7BBF8E"/>
+    <path d="M113 1242 L127 1242 L120 1254 Z" fill="#7BBF8E"/>
+    <path d="M120 1254 Q140 1300 110 1350" fill="none" stroke="#6B7280" stroke-width="3"/>
+  </g>
+  <g fill="#F2C94C"><circle cx="200" cy="120" r="6"/><circle cx="420" cy="80" r="5"/><circle cx="600" cy="180" r="5"/><circle cx="60" cy="400" r="5"/><circle cx="500" cy="1260" r="6"/><circle cx="900" cy="1220" r="6"/></g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#8FC7E8" stroke-opacity="0.8" stroke-width="3"/>
+</svg>

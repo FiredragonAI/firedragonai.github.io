@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <rect width="1080" height="1350" fill="#F5F0E6"/>
+  <!-- 水墨远山 -->
+  <path d="M0 1060 C120 980 220 1000 320 1040 C420 1080 520 960 640 990 C760 1020 860 940 1080 1000 L1080 1350 L0 1350 Z" fill="#6B7280" fill-opacity="0.18"/>
+  <path d="M0 1140 C160 1080 260 1150 400 1120 C540 1090 660 1180 800 1130 C920 1090 1000 1130 1080 1110 L1080 1350 L0 1350 Z" fill="#4B5563" fill-opacity="0.28"/>
+  <path d="M0 1230 C200 1180 320 1240 520 1210 C720 1180 860 1250 1080 1200 L1080 1350 L0 1350 Z" fill="#1F2937" fill-opacity="0.55"/>
+  <!-- 淡墨圆 -->
+  <circle cx="860" cy="220" r="120" fill="#9CA3AF" fill-opacity="0.18"/>
+  <circle cx="860" cy="220" r="120" fill="none" stroke="#4B5563" stroke-opacity="0.35" stroke-width="2"/>
+  <!-- 枝 -->
+  <path d="M1080 380 C980 360 900 380 820 430 C760 470 720 520 700 600" fill="none" stroke="#374151" stroke-opacity="0.7" stroke-width="5" stroke-linecap="round"/>
+  <path d="M880 400 C860 360 870 330 900 310" fill="none" stroke="#374151" stroke-opacity="0.7" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#C94F3D" fill-opacity="0.85">
+    <circle cx="905" cy="300" r="10"/><circle cx="830" cy="426" r="9"/><circle cx="760" cy="480" r="8"/><circle cx="960" cy="376" r="7"/>
+  </g>
+  <!-- 印章 -->
+  <rect x="940" y="1200" width="72" height="72" rx="6" fill="#C94F3D"/>
+  <rect x="952" y="1212" width="48" height="48" rx="3" fill="none" stroke="#F5F0E6" stroke-width="3"/>
+  <rect x="40" y="40" width="1000" height="1270" fill="none" stroke="#1F2937" stroke-opacity="0.35" stroke-width="2"/>
+</svg>

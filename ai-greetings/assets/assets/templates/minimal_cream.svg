@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <rect width="1080" height="1350" fill="#FAF6EE"/>
+  <rect x="40" y="40" width="1000" height="1270" fill="none" stroke="#C9A55A" stroke-width="2"/>
+  <rect x="56" y="56" width="968" height="1238" fill="none" stroke="#C9A55A" stroke-opacity="0.5" stroke-width="1"/>
+  <!-- 角饰 -->
+  <g stroke="#C9A55A" stroke-width="2" fill="none">
+    <path d="M56 120 L56 56 L120 56"/><path d="M960 56 L1024 56 L1024 120"/><path d="M56 1230 L56 1294 L120 1294"/><path d="M960 1294 L1024 1294 L1024 1230"/>
+  </g>
+  <circle cx="900" cy="1170" r="90" fill="#C9A55A" fill-opacity="0.12"/>
+  <circle cx="960" cy="1230" r="50" fill="#C9A55A" fill-opacity="0.12"/>
+</svg>

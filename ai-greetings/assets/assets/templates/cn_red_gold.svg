@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A81E17"/>
+      <stop offset="1" stop-color="#7A130E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 回纹边 -->
+  <g stroke="#F2C94C" stroke-width="3" fill="none" stroke-opacity="0.8">
+    <rect x="40" y="40" width="1000" height="1270"/>
+    <rect x="64" y="64" width="952" height="1222"/>
+  </g>
+  <g fill="#F2C94C">
+    <rect x="40" y="40" width="24" height="24"/><rect x="1016" y="40" width="24" height="24"/><rect x="40" y="1286" width="24" height="24"/><rect x="1016" y="1286" width="24" height="24"/>
+  </g>
+  <!-- 右上圆形团花 -->
+  <g transform="translate(880 230)">
+    <circle cx="0" cy="0" r="150" fill="none" stroke="#F2C94C" stroke-width="3" stroke-opacity="0.8"/>
+    <circle cx="0" cy="0" r="128" fill="none" stroke="#F2C94C" stroke-width="1.5" stroke-opacity="0.5"/>
+    <g fill="#F2C94C" fill-opacity="0.85">
+      <ellipse cx="0" cy="-80" rx="18" ry="46"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(45)"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(90)"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(135)"/>
+      <ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(180)"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(225)"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(270)"/><ellipse cx="0" cy="-80" rx="18" ry="46" transform="rotate(315)"/>
+    </g>
+    <circle cx="0" cy="0" r="26" fill="#F2C94C"/>
+  </g>
+  <!-- 底部云纹 -->
+  <g fill="none" stroke="#F2C94C" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round">
+    <path d="M120 1220 C140 1180 190 1180 200 1220 C210 1180 260 1180 270 1220"/>
+    <path d="M760 1240 C780 1200 830 1200 840 1240 C850 1200 900 1200 910 1240"/>
+  </g>
+</svg>

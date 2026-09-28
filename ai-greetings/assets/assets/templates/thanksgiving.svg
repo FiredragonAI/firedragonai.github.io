@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C2621F"/>
+      <stop offset="1" stop-color="#6E2F12"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 秋叶 -->
+  <g fill="#F2A541" fill-opacity="0.9">
+    <ellipse cx="900" cy="140" rx="34" ry="70" transform="rotate(30 900 140)"/>
+    <ellipse cx="990" cy="260" rx="28" ry="60" transform="rotate(-20 990 260)"/>
+    <ellipse cx="820" cy="300" rx="24" ry="52" transform="rotate(60 820 300)"/>
+  </g>
+  <g fill="#E0503A" fill-opacity="0.9">
+    <ellipse cx="960" cy="90" rx="26" ry="56" transform="rotate(-40 960 90)"/>
+    <ellipse cx="1010" cy="400" rx="22" ry="48" transform="rotate(15 1010 400)"/>
+    <ellipse cx="120" cy="1080" rx="26" ry="56" transform="rotate(50 120 1080)"/>
+  </g>
+  <g fill="#F2C94C" fill-opacity="0.8">
+    <ellipse cx="60" cy="1180" rx="20" ry="44" transform="rotate(-30 60 1180)"/>
+    <ellipse cx="200" cy="1160" rx="18" ry="40" transform="rotate(20 200 1160)"/>
+  </g>
+  <g stroke="#6E2F12" stroke-width="2" fill="none" stroke-opacity="0.6">
+    <line x1="880" y1="200" x2="920" y2="80"/><line x1="975" y1="315" x2="1005" y2="205"/>
+  </g>
+  <!-- 南瓜 -->
+  <g transform="translate(880 1160)">
+    <ellipse cx="0" cy="0" rx="150" ry="110" fill="#E07B2A"/>
+    <ellipse cx="-70" cy="0" rx="50" ry="110" fill="none" stroke="#B85C1B" stroke-width="4"/>
+    <ellipse cx="0" cy="0" rx="55" ry="110" fill="none" stroke="#B85C1B" stroke-width="4"/>
+    <ellipse cx="70" cy="0" rx="50" ry="110" fill="none" stroke="#B85C1B" stroke-width="4"/>
+    <rect x="-14" y="-140" width="28" height="44" rx="8" fill="#5E7A3A"/>
+  </g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#F2C94C" stroke-opacity="0.5" stroke-width="2"/>
+</svg>

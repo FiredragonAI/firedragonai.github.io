@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B1240"/>
+      <stop offset="1" stop-color="#0D0618"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <circle cx="860" cy="220" r="150" fill="#F2A541"/>
+  <circle cx="820" cy="190" r="18" fill="#D98B2E" fill-opacity="0.7"/><circle cx="900" cy="260" r="12" fill="#D98B2E" fill-opacity="0.7"/>
+  <!-- 蝙蝠 -->
+  <g fill="#0D0618">
+    <path d="M760 150 C740 120 700 120 690 150 C670 130 640 140 640 170 C670 160 690 175 700 190 C720 170 740 170 760 150 Z"/>
+    <path transform="translate(-120 200) scale(0.7)" d="M760 150 C740 120 700 120 690 150 C670 130 640 140 640 170 C670 160 690 175 700 190 C720 170 740 170 760 150 Z"/>
+  </g>
+  <g fill="#1B0E2E"><path transform="translate(-460 -60) scale(0.6)" d="M760 150 C740 120 700 120 690 150 C670 130 640 140 640 170 C670 160 690 175 700 190 C720 170 740 170 760 150 Z"/></g>
+  <!-- 南瓜灯 -->
+  <g transform="translate(860 1150)">
+    <ellipse cx="0" cy="0" rx="140" ry="105" fill="#F07A1E"/>
+    <ellipse cx="-60" cy="0" rx="45" ry="105" fill="none" stroke="#C25E12" stroke-width="4"/>
+    <ellipse cx="60" cy="0" rx="45" ry="105" fill="none" stroke="#C25E12" stroke-width="4"/>
+    <rect x="-12" y="-130" width="24" height="40" rx="6" fill="#5E7A3A"/>
+    <path d="M-70 -30 L-30 -30 L-50 -60 Z" fill="#2B1240"/><path d="M30 -30 L70 -30 L50 -60 Z" fill="#2B1240"/>
+    <path d="M-70 30 L-50 50 L-30 30 L-10 50 L10 30 L30 50 L50 30 L70 30 L50 60 L-50 60 Z" fill="#2B1240"/>
+  </g>
+  <!-- 地面 -->
+  <path d="M0 1250 Q300 1200 540 1250 T1080 1240 L1080 1350 L0 1350 Z" fill="#0D0618"/>
+  <g fill="#FFFFFF" fill-opacity="0.7"><circle cx="120" cy="140" r="3"/><circle cx="300" cy="80" r="2"/><circle cx="480" cy="200" r="2.5"/><circle cx="80" cy="600" r="2"/></g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#F2A541" stroke-opacity="0.5" stroke-width="2"/>
+</svg>

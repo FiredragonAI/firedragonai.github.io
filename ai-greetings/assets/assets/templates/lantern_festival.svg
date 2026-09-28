@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B0F2E"/>
+      <stop offset="1" stop-color="#1B0716"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFB347" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#FFB347" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 一排圆灯笼,不同高度 -->
+  <g stroke="#F2C94C" stroke-width="3">
+    <line x1="700" y1="0" x2="700" y2="90"/><line x1="820" y1="0" x2="820" y2="150"/><line x1="940" y1="0" x2="940" y2="60"/><line x1="1020" y1="0" x2="1020" y2="200"/>
+  </g>
+  <circle cx="700" cy="150" r="130" fill="url(#g1)"/>
+  <circle cx="700" cy="150" r="60" fill="#FF7A45"/>
+  <circle cx="700" cy="150" r="60" fill="none" stroke="#F2C94C" stroke-opacity="0.6" stroke-width="3"/>
+  <circle cx="820" cy="210" r="110" fill="url(#g1)"/>
+  <circle cx="820" cy="210" r="50" fill="#E6402E"/>
+  <circle cx="940" cy="120" r="100" fill="url(#g1)"/>
+  <circle cx="940" cy="120" r="44" fill="#FFB347"/>
+  <circle cx="1020" cy="260" r="90" fill="url(#g1)"/>
+  <circle cx="1020" cy="260" r="40" fill="#FF7A45"/>
+  <g fill="#F2C94C">
+    <rect x="690" y="206" width="20" height="10" rx="3"/><rect x="810" y="256" width="20" height="10" rx="3"/>
+    <rect x="930" y="160" width="20" height="10" rx="3"/><rect x="1010" y="296" width="20" height="10" rx="3"/>
+  </g>
+  <!-- 汤圆 -->
+  <g transform="translate(150 1180)">
+    <ellipse cx="0" cy="40" rx="150" ry="24" fill="#F2C94C" fill-opacity="0.15"/>
+    <circle cx="-50" cy="0" r="38" fill="#FFF6E5"/><circle cx="20" cy="-10" r="42" fill="#FFF6E5"/><circle cx="80" cy="6" r="36" fill="#FFF6E5"/>
+  </g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#F2C94C" stroke-opacity="0.5" stroke-width="2"/>
+</svg>

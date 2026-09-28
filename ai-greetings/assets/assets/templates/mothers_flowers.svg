@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FDF1F4"/>
+      <stop offset="1" stop-color="#F8DCE3"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <!-- 花束:左下 -->
+  <g stroke="#7BBF8E" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M200 1350 L200 1100"/><path d="M200 1350 L120 1130"/><path d="M200 1350 L290 1120"/><path d="M200 1350 L60 1200"/><path d="M200 1350 L330 1200"/>
+  </g>
+  <g fill="#F28CA0">
+    <g transform="translate(200 1080)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#F2C94C"/></g>
+    <g transform="translate(120 1120) scale(0.8)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#F2C94C"/></g>
+  </g>
+  <g fill="#E8788F">
+    <g transform="translate(290 1110) scale(0.85)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#F2C94C"/></g>
+  </g>
+  <g fill="#F2D06B">
+    <g transform="translate(60 1190) scale(0.6)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#E8788F"/></g>
+    <g transform="translate(330 1190) scale(0.6)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#E8788F"/></g>
+  </g>
+  <!-- 叶 -->
+  <path d="M170 1240 C130 1210 120 1170 150 1150 C170 1180 175 1210 170 1240 Z" fill="#9CD3AC"/>
+  <path d="M240 1250 C280 1220 290 1180 260 1160 C240 1190 235 1220 240 1250 Z" fill="#9CD3AC"/>
+  <!-- 右上小花 -->
+  <g fill="#F28CA0" fill-opacity="0.5" transform="translate(960 160) scale(0.7)"><circle cx="0" cy="-28" r="20"/><circle cx="27" cy="-9" r="20"/><circle cx="17" cy="23" r="20"/><circle cx="-17" cy="23" r="20"/><circle cx="-27" cy="-9" r="20"/><circle cx="0" cy="0" r="12" fill="#F2C94C"/></g>
+  <rect x="48" y="48" width="984" height="1254" rx="24" fill="none" stroke="#E8788F" stroke-opacity="0.5" stroke-width="2"/>
+</svg>
