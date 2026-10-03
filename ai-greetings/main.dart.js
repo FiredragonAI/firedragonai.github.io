@@ -49284,7 +49284,7 @@ A.nD.prototype={
 gnt(){var s=A.bV(this.b.a.i(0,"sender_name"))
 return s==null?"":s},
 gKb(){var s=A.bV(this.b.a.i(0,"api_url"))
-return s==null?"https://ai-greetings.onrender.com":s},
+return s==null?"https://ai-greetings-xtqb.onrender.com":s},
 ga3u(){var s=A.bV(this.b.a.i(0,"ui_language"))
 return s==null?"system":s},
 gdK(){var s,r=this.ga3u()
