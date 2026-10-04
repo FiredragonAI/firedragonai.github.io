@@ -1,10 +1,13 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "io.github.firedragonai.listen",
       "sha256_cert_fingerprints": [
+        "DA:8F:A3:90:44:BD:41:C7:9C:B6:32:8B:14:46:07:25:55:01:77:C1:14:D9:DA:4F:18:9D:87:AF:2A:F9:77:C3",
         "07:B2:21:9C:34:28:09:C0:52:6B:3D:B6:0E:DD:1D:4E:53:60:3F:BC:51:37:E0:5D:A0:BA:76:21:EF:84:CA:B5"
       ]
     }
