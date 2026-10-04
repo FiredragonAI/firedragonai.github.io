@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>隐私政策 · Listen Everything</title>
+<meta name="theme-color" content="#16181D">
+<style>
+  :root {
+    --bg:#16181D; --panel:#20232A; --line:#454C59; --fg:#F2F4F7; --muted:#AEB6C2; --accent:#5B9DF9;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#F4F6F9; --panel:#FFFFFF; --line:#CFD6E0; --fg:#1B1F27; --muted:#5B6472; --accent:#2F6FD6; color-scheme: light; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:16px/1.65 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  .wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; text-wrap: balance; }
+  h2 { font-size: 1.1rem; margin: 32px 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  p, li { color: var(--fg); }
+  .muted { color: var(--muted); }
+  table { width:100%; border-collapse: collapse; margin: 10px 0 4px; font-size: .95rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  a { color: var(--accent); }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0 28px; }
+  code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+  .scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Listen Everything 隐私政策</h1>
+<p class="sub">最后更新：2026年10月3日</p>
+
+<p>Listen Everything 是一个把文字读出来的工具。<strong>它没有账号，不收集任何个人信息，不做广告，不做统计分析，也没有自己的服务器保存你的任何内容。</strong></p>
+
+<h2>你的内容去了哪里</h2>
+<p>你输入、粘贴、说出、打开的文字和图片，默认<strong>只留在你自己的设备上</strong>。只有三个功能需要联网，下面逐条说明——它们都是可选的，不用就不会发生。</p>
+
+<div class="scroll">
+<table>
+  <tr><th>功能</th><th>发送了什么</th><th>发给谁</th></tr>
+  <tr>
+    <td>朗读</td>
+    <td>不发送。使用设备自带的语音引擎</td>
+    <td>——</td>
+  </tr>
+  <tr>
+    <td>打开文件（txt / Word / PDF 等）</td>
+    <td>不发送。文件在浏览器内解析</td>
+    <td>——</td>
+  </tr>
+  <tr>
+    <td>图片文字识别</td>
+    <td>不发送图片。识别在浏览器内完成，只从 CDN 下载识别引擎和语言数据</td>
+    <td>jsDelivr / tessdata（仅下载程序文件）</td>
+  </tr>
+  <tr>
+    <td>🎤 语音输入</td>
+    <td>你的语音。由浏览器自带的语音识别处理；在 Chrome / Android 上，语音会送到 Google 的识别服务</td>
+    <td>你的浏览器厂商（通常是 Google 或 Apple）</td>
+  </tr>
+  <tr>
+    <td>翻译后朗读（「用哪种语言听」）</td>
+    <td>待翻译的那几句文字</td>
+    <td>MyMemory 翻译服务</td>
+  </tr>
+  <tr>
+    <td>读取网页</td>
+    <td>你输入的网址</td>
+    <td>r.jina.ai 正文提取服务</td>
+  </tr>
+</table>
+</div>
+
+<div class="box">
+  <strong>重点：</strong>如果你不开语音输入、不开翻译、不用网页功能，那么你读的任何东西都不会离开你的设备。
+</div>
+
+<h2>权限</h2>
+<ul>
+  <li><strong>麦克风</strong>——只在你按下「🎤 语音输入」后使用，用来把你说的话变成文字。松手即停，不在后台录音。</li>
+  <li><strong>相机 / 照片</strong>——只在你按下「拍照/图片」后使用，用来识别图片里的文字。图片不上传。</li>
+</ul>
+
+<h2>保存在你设备上的东西</h2>
+<p>本应用用浏览器的 <code>localStorage</code> 记住你的设置：字号、语速、界面语言、朗读语言、选择的声音。这些只存在你这台设备上，不会同步，也不会发给任何人。清除浏览器数据即可删除。</p>
+
+<h2>儿童</h2>
+<p>本应用不针对 13 岁以下儿童，也不会有意收集儿童的任何信息。</p>
+
+<h2>第三方服务的政策</h2>
+<ul>
+  <li>MyMemory 翻译：<a href="https://mymemory.translated.net/doc/privacy.php" rel="noopener">mymemory.translated.net/doc/privacy.php</a></li>
+  <li>Jina Reader：<a href="https://jina.ai/legal/" rel="noopener">jina.ai/legal</a></li>
+  <li>语音识别遵循你所用浏览器厂商的隐私政策（如 Google Chrome 或 Apple Safari）。</li>
+</ul>
+
+<h2>变更与联系</h2>
+<p>政策如有变更，会更新本页顶部的日期。有任何问题，请在代码仓库提 issue：<a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
+
+<hr>
+
+<h1>Privacy Policy</h1>
+<p class="sub">Last updated: 3 October 2026</p>
+
+<p>Listen Everything reads text aloud. <strong>It has no accounts, collects no personal information, shows no ads, runs no analytics, and keeps nothing on any server of ours.</strong></p>
+
+<h2>Where your content goes</h2>
+<p>Text and pictures you type, paste, speak or open stay <strong>on your own device</strong> by default. Only three optional features reach the network:</p>
+
+<div class="scroll">
+<table>
+  <tr><th>Feature</th><th>What is sent</th><th>To whom</th></tr>
+  <tr><td>Reading aloud</td><td>Nothing. Uses the device's own voices</td><td>—</td></tr>
+  <tr><td>Opening files</td><td>Nothing. Parsed inside the browser</td><td>—</td></tr>
+  <tr><td>Text in photos</td><td>No image is sent. Recognition runs in the browser; only the engine and language data are downloaded</td><td>jsDelivr / tessdata (program files only)</td>
+  </tr>
+  <tr><td>🎤 Speech input</td><td>Your speech, handled by the browser's own recogniser. On Chrome and Android that audio goes to Google's recognition service</td><td>Your browser vendor</td></tr>
+  <tr><td>Translated reading</td><td>The sentences being translated</td><td>MyMemory translation</td></tr>
+  <tr><td>Reading a web page</td><td>The address you enter</td><td>r.jina.ai reader service</td></tr>
+</table>
+</div>
+
+<div class="box">
+  <strong>In short:</strong> leave speech input, translation and web pages alone, and nothing you read ever leaves your device.
+</div>
+
+<h2>Permissions</h2>
+<ul>
+  <li><strong>Microphone</strong> — only while you hold a dictation session open, to turn speech into text. Never in the background.</li>
+  <li><strong>Camera / photos</strong> — only when you choose a photo, to recognise the text in it. Images are not uploaded.</li>
+</ul>
+
+<h2>Stored on your device</h2>
+<p>Preferences (text size, speed, interface language, listening language, chosen voices) are kept in the browser's <code>localStorage</code>. They never sync and never leave the device; clearing site data removes them.</p>
+
+<h2>Children</h2>
+<p>This app is not directed at children under 13 and does not knowingly collect information from them.</p>
+
+<h2>Changes and contact</h2>
+<p>Changes are dated at the top of this page. Questions: open an issue at <a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
+
+</div>
+</body>
+</html>

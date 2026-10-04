@@ -32,6 +32,13 @@ source_page="$here/../ListenEverything/web/index.html"
 HEAD
   cat "$source_page"
   cat <<'TAIL'
+<script>
+  // Offline shell. Only on a real host: inside the Claude artifact sandbox there
+  // is no sw.js and no permission to register one, so this fails and is ignored.
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  }
+</script>
 </body>
 </html>
 TAIL

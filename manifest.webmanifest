@@ -1,14 +1,21 @@
 {
   "name": "Listen Everything",
   "short_name": "Listen",
-  "description": "Read anything aloud — typed text, files, photos, web pages — in any language, with your device's own voices.",
+  "description": "Read anything aloud — typed or spoken text, files, photos, web pages — in any language, with your device's own voices.",
+  "id": "/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#16181D",
   "theme_color": "#16181D",
   "lang": "zh",
+  "dir": "auto",
+  "categories": ["productivity", "education", "books"],
   "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
 }

@@ -1,0 +1,6 @@
+# Signing material never goes to a public repository.
+android-key.properties
+*.jks
+*.keystore
+android/
+node_modules/
