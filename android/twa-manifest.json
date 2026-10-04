@@ -1,0 +1,41 @@
+{
+  "packageId": "io.github.firedragonai.listen",
+  "host": "firedragonai.github.io",
+  "name": "Listen Everything",
+  "launcherName": "Listen",
+  "display": "standalone",
+  "themeColor": "#16181D",
+  "themeColorDark": "#16181D",
+  "navigationColor": "#16181D",
+  "navigationColorDark": "#16181D",
+  "navigationDividerColor": "#16181D",
+  "navigationDividerColorDark": "#16181D",
+  "backgroundColor": "#16181D",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://firedragonai.github.io/icon-512.png",
+  "maskableIconUrl": "https://firedragonai.github.io/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:/Users/boadb/listen-everything-upload-keystore.jks",
+    "alias": "listen-upload"
+  },
+  "appVersionName": "1.0.0",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://firedragonai.github.io/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://firedragonai.github.io/",
+  "minSdkVersion": 23,
+  "orientation": "default",
+  "fingerprints": []
+}

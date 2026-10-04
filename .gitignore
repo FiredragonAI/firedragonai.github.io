@@ -2,5 +2,11 @@
 android-key.properties
 *.jks
 *.keystore
-android/
+
+# Generated Android project; rebuild with: cd android && npx @bubblewrap/cli update && ./gradlew bundleRelease
+android/*
+!android/twa-manifest.json
+
+# Play Store upload assets (regenerate with tools/, screenshots retaken from the live site)
+store/
 node_modules/

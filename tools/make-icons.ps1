@@ -1,4 +1,4 @@
-# Draws the Listen Everything icon as PNG at any size.
+﻿# Draws the Listen Everything icon as PNG at any size.
 #
 # The source icon is an SVG, and nothing on this machine rasterises SVG, so the
 # same shapes are drawn with GDI+ instead. The design is laid out in a 128-unit
