@@ -35,7 +35,7 @@
   "isChromeOSOnly": false,
   "isMetaQuest": false,
   "fullScopeUrl": "https://firedragonai.github.io/",
-  "minSdkVersion": 23,
+  "minSdkVersion": 24,
   "orientation": "default",
   "fingerprints": []
 }

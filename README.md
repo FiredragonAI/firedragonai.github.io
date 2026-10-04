@@ -13,3 +13,25 @@ runs in the browser (Tesseract.js) and downloads its language data on first use.
 
 This is the browser edition of the Listen Everything desktop app. The page is a
 single file; `build.sh` wraps the app's source page into a full document for hosting.
+
+## Android (Google Play)
+
+The Play build is a Trusted Web Activity over this site, generated from
+`android/twa-manifest.json`:
+
+```bash
+cd android && npx @bubblewrap/cli update && ./gradlew bundleRelease
+```
+
+Two things that bite:
+
+- `minSdkVersion` must be **24 or higher**. Play's automatic protection refuses a
+  bundle built with 23, and the upload is rejected with no bundle accepted.
+- `bubblewrap update` regenerates `app/build.gradle` and **drops the signing
+  config**, which then produces an unsigned bundle that Play rejects later and
+  less clearly. After regenerating, re-add the block that reads
+  `../android-key.properties` (see git history for the exact snippet).
+
+The keystore lives outside the repository, with its password in
+`android-key.properties`. Both are gitignored, and losing either means this app
+can never be updated again.
