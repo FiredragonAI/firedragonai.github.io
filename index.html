@@ -1043,11 +1043,32 @@
     if (deva >= best) return 'hi';
     if (beng >= best) return 'bn';
     if (thai >= best) return 'th';
-    if (/[ñ¿¡]/i.test(text) || /\b(el|la|los|las|que|para|con)\b/i.test(text) && /\b(y|de)\b/i.test(text) && !/\b(the|and)\b/i.test(text)) return 'es';
-    if (/[ãõç]/i.test(text) && !/\b(the|and)\b/i.test(text)) return 'pt';
-    if (/[éèêàçù]/i.test(text) && /\b(le|les|des|est|une)\b/i.test(text)) return 'fr';
-    if (/[äöüß]/i.test(text) && /\b(der|die|das|und|ist)\b/i.test(text)) return 'de';
-    return 'en';
+    return latinLanguage(text);
+  }
+  // Latin-script languages by their commonest small words, with letters only
+  // one of them uses as extra evidence. Another language has to beat English
+  // clearly, and be the only one that does, so an English sentence with a
+  // borrowed word ("café", "la") stays English.
+  const LATIN_WORDS = {
+    en: 'the and is are was were of to in that it you for with on this be have not a an at as by from or',
+    es: 'el la los las de que y en un una por para con es del al se lo como más pero su sus muy está favor gracias hola',
+    fr: 'le la les de des et est un une du en que pour pas dans ce il elle je vous nous avec sur au aux merci très bonjour',
+    de: 'der die das und ist nicht ein eine zu den dem mit von sich auf für ich du sie es bitte danke auch noch',
+    pt: 'o a os as de que e do da dos das em um uma para com não por se mais muito obrigado você está',
+    it: 'il lo la gli le di che e un una per con non è sono della del grazie anche molto questo',
+  };
+  const LATIN_SETS = Object.fromEntries(Object.entries(LATIN_WORDS).map(([k, v]) => [k, new Set(v.split(' '))]));
+  const LATIN_MARKS = { es: /[ñ¿¡]/, fr: /[œçèêëîïû]/, de: /[äöüß]/, pt: /[ãõ]/, it: /[ìò]/ };
+  function latinLanguage(text) {
+    const lower = text.toLowerCase();
+    const words = lower.match(/[a-zà-ÿœß]+/g) || [];
+    const score = {};
+    for (const [lang, set] of Object.entries(LATIN_SETS)) score[lang] = words.filter((w) => set.has(w)).length;
+    for (const [lang, re] of Object.entries(LATIN_MARKS)) if (re.test(lower)) score[lang] += 2;
+    const others = ['es', 'fr', 'de', 'pt', 'it'].sort((a, b) => score[b] - score[a]);
+    const [top, second] = others;
+    const need = words.length <= 3 ? 1 : 2;
+    return score[top] >= need && score[top] > score.en + (words.length <= 3 ? 0 : 1) && score[top] > score[second] ? top : 'en';
   }
 
   // Sentences by punctuation, never by line. Text with no sentence punctuation
