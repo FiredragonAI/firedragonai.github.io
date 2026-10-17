@@ -11,17 +11,16 @@
     color-scheme: dark;
   }
   @media (prefers-color-scheme: light) {
-    :root { --bg:#F4F6F9; --panel:#FFFFFF; --line:#CFD6E0; --fg:#1B1F27; --muted:#5B6472; --accent:#2F6FD6; color-scheme: light; }
+    :root { --bg:#F4F6F9; --panel:#FFFFFF; --line:#CFD6E0; --fg:#1B1F27; --muted:#5B6472; --accent:#2563C9; color-scheme: light; }
   }
   * { box-sizing: border-box; }
   body { margin:0; background:var(--bg); color:var(--fg);
-         font:16px/1.65 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+         font:1rem/1.65 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
   .wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; }
   h1 { font-size: 1.6rem; margin: 0 0 4px; text-wrap: balance; }
   h2 { font-size: 1.1rem; margin: 32px 0 8px; }
   .sub { color: var(--muted); margin: 0 0 28px; }
   p, li { color: var(--fg); }
-  .muted { color: var(--muted); }
   table { width:100%; border-collapse: collapse; margin: 10px 0 4px; font-size: .95rem; }
   th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { color: var(--muted); font-weight: 600; }
@@ -33,64 +32,50 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
 
 <h1>Listen Everything 隐私政策</h1>
-<p class="sub">最后更新：2026年10月3日</p>
+<p class="sub">最后更新：2026年10月16日</p>
 
 <p>Listen Everything 是一个把文字读出来的工具。<strong>它没有账号，不收集任何个人信息，不做广告，不做统计分析，也没有自己的服务器保存你的任何内容。</strong></p>
 
 <h2>你的内容去了哪里</h2>
-<p>你输入、粘贴、说出、打开的文字和图片，默认<strong>只留在你自己的设备上</strong>。只有三个功能需要联网，下面逐条说明——它们都是可选的，不用就不会发生。</p>
+<p>你输入、粘贴、分享过来、说出、打开的文字和图片，默认<strong>只留在你自己的设备上</strong>。只有下面标出的几个功能需要把内容发出去——它们都是可选的，不用就不会发生。</p>
 
 <div class="scroll">
 <table>
   <tr><th>功能</th><th>发送了什么</th><th>发给谁</th></tr>
-  <tr>
-    <td>朗读</td>
-    <td>不发送。使用设备自带的语音引擎</td>
-    <td>——</td>
-  </tr>
-  <tr>
-    <td>打开文件（txt / Word / PDF 等）</td>
-    <td>不发送。文件在浏览器内解析</td>
-    <td>——</td>
-  </tr>
-  <tr>
-    <td>图片文字识别</td>
-    <td>不发送图片。识别在浏览器内完成，只从 CDN 下载识别引擎和语言数据</td>
-    <td>jsDelivr / tessdata（仅下载程序文件）</td>
-  </tr>
-  <tr>
-    <td>🎤 语音输入</td>
-    <td>你的语音。由浏览器自带的语音识别处理；在 Chrome / Android 上，语音会送到 Google 的识别服务</td>
-    <td>你的浏览器厂商（通常是 Google 或 Apple）</td>
-  </tr>
-  <tr>
-    <td>翻译后朗读（「用哪种语言听」）</td>
-    <td>待翻译的那几句文字</td>
-    <td>MyMemory 翻译服务</td>
-  </tr>
-  <tr>
-    <td>读取网页</td>
-    <td>你输入的网址</td>
-    <td>r.jina.ai 正文提取服务</td>
-  </tr>
+  <tr><td>朗读</td><td>不发送。使用设备自带的语音引擎</td><td>——</td></tr>
+  <tr><td>打开文件（TXT、Markdown、HTML、Word、PDF）</td><td>不发送。文件在 App 内解析；第一次打开 PDF 或 Word 时会下载对应的解析程序</td><td>cdnjs（仅下载程序文件）</td></tr>
+  <tr><td>拍照识字</td><td>不发送图片。识别在 App 内完成；第一次使用时下载识别引擎和语言数据</td><td>cdnjs、jsDelivr、tessdata（仅下载程序文件）</td></tr>
+  <tr><td>从其他 App 分享过来</td><td>分享的文字不发送。分享的是链接时，要你点「朗读」后才会去获取，规则同「读取网页」</td><td>——</td></tr>
+  <tr><td>🎤 语音输入</td><td>你的语音。由浏览器自带的语音识别处理；在 Chrome / Android 上，语音会送到 Google 的识别服务</td><td>你的浏览器厂商（通常是 Google）</td></tr>
+  <tr><td>翻译后朗读（「用哪种语言听」）</td><td>正在翻译的那几句文字</td><td>MyMemory 翻译服务</td></tr>
+  <tr><td>读取网页</td><td>你输入或分享过来的网址</td><td>r.jina.ai 正文提取服务</td></tr>
+  <tr><td>发送反馈</td><td>App 本身不发送。只有你在自己的邮件 App 里按下发送，邮件才会发出（见下文）</td><td>由你决定</td></tr>
 </table>
 </div>
 
 <div class="box">
-  <strong>重点：</strong>如果你不开语音输入、不开翻译、不用网页功能，那么你读的任何东西都不会离开你的设备。
+  <strong>重点：</strong>不开语音输入、不开翻译、不用网页功能，你读的任何东西都不会离开你的设备。界面字体（Google Fonts）和上面提到的程序文件会从网上下载，这些请求不包含你读的任何内容。
 </div>
 
 <h2>权限</h2>
 <ul>
-  <li><strong>麦克风</strong>——只在你按下「🎤 语音输入」后使用，用来把你说的话变成文字。松手即停，不在后台录音。</li>
-  <li><strong>相机 / 照片</strong>——只在你按下「拍照/图片」后使用，用来识别图片里的文字。图片不上传。</li>
+  <li><strong>麦克风</strong>——只在你点「说话」之后使用，用来把你说的话变成文字。点「停止」即停，不在后台录音。</li>
+  <li><strong>相机 / 照片</strong>——只在你点「拍照识字」或「从相册选图」之后使用。图片不上传，也不保存。</li>
+  <li><strong>剪贴板</strong>——只在你点「粘贴并朗读」或「粘贴」时读取一次。</li>
+  <li><strong>屏幕常亮</strong>——朗读时让屏幕不自动熄灭（可在设置里关闭），不涉及任何数据。</li>
 </ul>
 
 <h2>保存在你设备上的东西</h2>
-<p>本应用用浏览器的 <code>localStorage</code> 记住你的设置：字号、语速、界面语言、朗读语言、选择的声音。这些只存在你这台设备上，不会同步，也不会发给任何人。清除浏览器数据即可删除。</p>
+<ul>
+  <li><strong>书库</strong>：你打开过的文字（只有文字，不含图片和原文件）和朗读进度，保存在 App 的本地存储（IndexedDB）里，方便下次接着听。它不会同步，也不会发给任何人。可以在书库里逐条删除，或在「设置 → 清空书库」一次删除；卸载 App 或清除它的存储也会全部删除。</li>
+  <li><strong>设置</strong>：字号、语速、主题、界面语言、朗读语言、选择的声音、是否看过新手引导，保存在 <code>localStorage</code> 里。</li>
+</ul>
+
+<h2>反馈</h2>
+<p>「设置 → 发送反馈」只是帮你写好一封邮件：会打开你自己的邮件 App，由你检查、修改，再决定是否发送。发送前页面上会完整显示邮件内容：你写的文字；可选的 App 与设备信息（App 版本、系统和浏览器版本、手机型号、界面语言和朗读设置、本机可用的语音数量和语言、屏幕尺寸，可以取消勾选）；以及正在朗读的那一句——它默认<strong>不</strong>附带，只有你主动勾选才会加进去。收到的反馈只用于回复你和改进本应用，你可以随时要求删除。</p>
 
 <h2>儿童</h2>
 <p>本应用不针对 13 岁以下儿童，也不会有意收集儿童的任何信息。</p>
@@ -99,54 +84,65 @@
 <ul>
   <li>MyMemory 翻译：<a href="https://mymemory.translated.net/doc/privacy.php" rel="noopener">mymemory.translated.net/doc/privacy.php</a></li>
   <li>Jina Reader：<a href="https://jina.ai/legal/" rel="noopener">jina.ai/legal</a></li>
-  <li>语音识别遵循你所用浏览器厂商的隐私政策（如 Google Chrome 或 Apple Safari）。</li>
+  <li>语音识别遵循你所用浏览器厂商的隐私政策（如 Google Chrome）。</li>
 </ul>
 
 <h2>变更与联系</h2>
-<p>政策如有变更，会更新本页顶部的日期。有任何问题，请在代码仓库提 issue：<a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
+<p>政策如有变更，会更新本页顶部的日期。有任何问题，可以在 App 里「设置 → 发送反馈」，或在代码仓库提 issue：<a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
 
 <hr>
 
-<h1>Privacy Policy</h1>
-<p class="sub">Last updated: 3 October 2026</p>
+<h1 lang="en">Privacy Policy</h1>
+<div lang="en">
+<p class="sub">Last updated: 16 October 2026</p>
 
 <p>Listen Everything reads text aloud. <strong>It has no accounts, collects no personal information, shows no ads, runs no analytics, and keeps nothing on any server of ours.</strong></p>
 
 <h2>Where your content goes</h2>
-<p>Text and pictures you type, paste, speak or open stay <strong>on your own device</strong> by default. Only three optional features reach the network:</p>
+<p>Text and pictures you type, paste, share in, speak or open stay <strong>on your own device</strong> by default. Only the optional features marked below send anything out:</p>
 
 <div class="scroll">
 <table>
   <tr><th>Feature</th><th>What is sent</th><th>To whom</th></tr>
   <tr><td>Reading aloud</td><td>Nothing. Uses the device's own voices</td><td>—</td></tr>
-  <tr><td>Opening files</td><td>Nothing. Parsed inside the browser</td><td>—</td></tr>
-  <tr><td>Text in photos</td><td>No image is sent. Recognition runs in the browser; only the engine and language data are downloaded</td><td>jsDelivr / tessdata (program files only)</td>
-  </tr>
+  <tr><td>Opening files (TXT, Markdown, HTML, Word, PDF)</td><td>Nothing. Files are read inside the app; the PDF and Word readers are downloaded the first time they are needed</td><td>cdnjs (program files only)</td></tr>
+  <tr><td>Text in photos</td><td>No image is sent. Recognition runs inside the app; the engine and language data are downloaded on first use</td><td>cdnjs, jsDelivr, tessdata (program files only)</td></tr>
+  <tr><td>Sharing in from another app</td><td>Shared text is not sent. A shared link is fetched only after you tap Read aloud, as for web pages</td><td>—</td></tr>
   <tr><td>🎤 Speech input</td><td>Your speech, handled by the browser's own recogniser. On Chrome and Android that audio goes to Google's recognition service</td><td>Your browser vendor</td></tr>
   <tr><td>Translated reading</td><td>The sentences being translated</td><td>MyMemory translation</td></tr>
-  <tr><td>Reading a web page</td><td>The address you enter</td><td>r.jina.ai reader service</td></tr>
+  <tr><td>Reading a web page</td><td>The address you enter or share</td><td>r.jina.ai reader service</td></tr>
+  <tr><td>Sending feedback</td><td>Nothing by the app. An email goes out only if you press send in your own email app (see below)</td><td>Your choice</td></tr>
 </table>
 </div>
 
 <div class="box">
-  <strong>In short:</strong> leave speech input, translation and web pages alone, and nothing you read ever leaves your device.
+  <strong>In short:</strong> leave speech input, translation and web pages alone, and nothing you read ever leaves your device. The interface font (Google Fonts) and the program files above are downloaded from the web; those requests contain nothing you read.
 </div>
 
 <h2>Permissions</h2>
 <ul>
-  <li><strong>Microphone</strong> — only while you hold a dictation session open, to turn speech into text. Never in the background.</li>
-  <li><strong>Camera / photos</strong> — only when you choose a photo, to recognise the text in it. Images are not uploaded.</li>
+  <li><strong>Microphone</strong> — only after you tap Speak, to turn speech into text, until you tap Stop. Never in the background.</li>
+  <li><strong>Camera / photos</strong> — only after you tap Scan with camera or Choose an image. Images are neither uploaded nor kept.</li>
+  <li><strong>Clipboard</strong> — read once, only when you tap Paste and listen or Paste.</li>
+  <li><strong>Keep screen on</strong> — keeps the screen awake while reading (can be turned off in Settings). No data involved.</li>
 </ul>
 
 <h2>Stored on your device</h2>
-<p>Preferences (text size, speed, interface language, listening language, chosen voices) are kept in the browser's <code>localStorage</code>. They never sync and never leave the device; clearing site data removes them.</p>
+<ul>
+  <li><strong>Library</strong>: the texts you open (text only — no images or original files) and where you stopped, kept in the app's local storage (IndexedDB) so you can continue later. Never synced, never sent. Delete items one by one in the library, or all at once in Settings → Clear the library; uninstalling the app or clearing its storage deletes it too.</li>
+  <li><strong>Settings</strong>: text size, speed, theme, interface language, listening language, chosen voices, and whether you have seen the introduction, kept in <code>localStorage</code>.</li>
+</ul>
+
+<h2>Feedback</h2>
+<p>Settings → Send feedback only drafts an email: it opens your own email app, where you can read and change it before deciding whether to send it. The page shows the full email before anything opens: your message; optional app and device details (app version, system and browser versions, phone model, interface language and reading settings, number and languages of voices on the device, screen size — you can untick them); and the sentence being read, which is <strong>not</strong> included unless you tick it. Feedback is used only to reply to you and to improve the app; you can ask for it to be deleted at any time.</p>
 
 <h2>Children</h2>
 <p>This app is not directed at children under 13 and does not knowingly collect information from them.</p>
 
 <h2>Changes and contact</h2>
-<p>Changes are dated at the top of this page. Questions: open an issue at <a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
-
+<p>Changes are dated at the top of this page. Questions: use Settings → Send feedback in the app, or open an issue at <a href="https://github.com/FiredragonAI/firedragonai.github.io" rel="noopener">github.com/FiredragonAI/firedragonai.github.io</a></p>
 </div>
+
+</main>
 </body>
 </html>

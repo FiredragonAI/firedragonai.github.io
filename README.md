@@ -14,6 +14,20 @@ runs in the browser (Tesseract.js) and downloads its language data on first use.
 This is the browser edition of the Listen Everything desktop app. The page is a
 single file; `build.sh` wraps the app's source page into a full document for hosting.
 
+## Checks and store screenshots
+
+With this folder served on port 8771 (`npx http-server . -p 8771 -c-1`), these
+drive the real page in headless Chrome through its `?selftest` hook:
+
+```bash
+node tools/check-layout.mjs out/   # every screen at 320–360 px, both themes, 200% text: overflow and touch targets
+node tools/check-a11y.mjs          # axe-core, WCAG 2.1 A/AA + best practice, every screen
+node tools/store-shots.mjs store/screenshots-1.1   # Play screenshots, 1080×1920, with headlines
+```
+
+The unit tests for the text helpers live with the source page:
+`node ../ListenEverything/web/tests/core.test.mjs`.
+
 ## Android (Google Play)
 
 The Play build is a Trusted Web Activity over this site, generated from
