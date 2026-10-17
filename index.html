@@ -180,8 +180,9 @@
   .field > label, .field .lab { font-weight: 500; display: flex; justify-content: space-between; gap: .5rem; }
   .field > label b { font-variant-numeric: tabular-nums; }
   .field.bare { padding: .5rem 0; }
-  #setVoices:empty { display: none; }
-  #setVoices > .field + .field { border-top: 1px solid var(--line); }
+  .more summary { min-height: 48px; padding: .75rem 1rem; font-weight: 500; cursor: pointer; }
+  .more > .hint { padding: 0 1rem .5rem; }
+  #setVoices > .field { border-top: 1px solid var(--line); }
   .fbtypes .chip .icon { display: none; }
   .fbtypes .chip:has(input:checked) .icon { display: inline; }
   .inline { display: flex; gap: .5rem; align-items: center; }
@@ -433,7 +434,11 @@
             <select id="listenIn"></select>
             <p class="hint" id="listenHint"></p>
           </div>
-          <div id="setVoices"></div>
+          <details class="more" id="voicesMore">
+            <summary data-i18n="voicesMore">Voices (optional)</summary>
+            <p class="hint" data-i18n="voicesMoreD"></p>
+            <div id="setVoices"></div>
+          </details>
           <div class="field">
             <label for="speedSet"><span data-i18n="defaultSpeed">Reading speed</span><b id="speedSetLabel"></b></label>
             <input type="range" id="speedSet" min="0.5" max="2" step="0.05">
@@ -490,6 +495,8 @@
               <option value="pt-BR" lang="pt">Português</option>
               <option value="fr-FR" lang="fr">Français</option>
               <option value="de-DE" lang="de">Deutsch</option>
+              <option value="vi-VN" lang="vi">Tiếng Việt</option>
+              <option value="id-ID" lang="id">Bahasa Indonesia</option>
             </select>
           </div>
         </div>
@@ -603,13 +610,13 @@
 </div>
 
 <div class="sheet" id="voiceSheet" role="dialog" aria-modal="true" aria-labelledby="voiceH" hidden>
-  <div class="sheet-head"><h2 id="voiceH" tabindex="-1" data-i18n="voiceSheet">Language &amp; voice</h2><button class="ibtn" type="button" data-close data-i18n-aria="close"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-head"><h2 id="voiceH" tabindex="-1" data-i18n="voiceSheet">Language</h2><button class="ibtn" type="button" data-close data-i18n-aria="close"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button></div>
   <div class="field bare">
     <label for="listenIn2" data-i18n="listenIn">Listen in</label>
     <select id="listenIn2"></select>
     <p class="hint" id="listenHint2"></p>
+    <p class="warn" id="sheetVoiceWarn" hidden></p>
   </div>
-  <div id="sheetVoices"></div>
 </div>
 
 <div class="sheet" id="webSheet" role="dialog" aria-modal="true" aria-labelledby="webH" hidden>
@@ -766,6 +773,8 @@
       listenHintTr: (l) => `Every sentence is translated into ${l} and read in it. The translating is done by MyMemory, a free online service, so the sentences are sent to it.`,
       voiceFor: (l) => `Voice for ${l}`, auto: 'Automatic (best match)', preview: (l) => `Play a sample of the ${l} voice`,
       noVoice: (l) => `This phone has no ${l} voice. Add one in Android Settings → Text-to-speech output, then reopen the app.`,
+      noVoiceWeb: (l) => `This browser has no ${l} voice. Google Chrome and Microsoft Edge come with online voices for many languages; you can also add one in your computer’s speech settings.`,
+      voicesMore: 'Voices (optional)', voicesMoreD: 'Chosen automatically for each language and your region. Pick one only if you prefer another accent or voice.',
       defaultSpeed: 'Reading speed', keepAwake: 'Keep the screen on while reading', keepAwakeD: 'So the phone doesn’t lock in the middle of a text.',
       textSize: 'Text size', sizePreview: 'The quick brown fox · 敏捷的狐狸', theme: 'Theme',
       themeSystem: 'Same as the phone', themeDark: 'Dark', themeLight: 'Light', uiLang: 'App language', langAuto: 'Automatic',
@@ -790,7 +799,7 @@
       left: (m) => (m < 1 ? '< 1 min left' : `≈ ${m} min left`),
       speed: 'Speed', rateText: (r) => `${r} times`, speedBtn: (r) => `Speed ${r}. Change the speed`,
       speedHint: 'Changes apply right away.', fineTune: 'Fine-tune',
-      voiceBtn: 'Language and voice', voiceSheet: 'Language & voice',
+      voiceBtn: 'Language', voiceSheet: 'Language',
       nowVoice: (l, v) => `${l} · ${v}`, defaultVoice: 'default voice', jumpCurrent: 'Back to the current sentence',
       miniClose: 'Close the player', playing: 'Playing', paused: 'Paused', idle: 'Ready',
       finishedMsg: 'Finished.', stopped: 'Stopped. Read aloud starts again from the beginning.',
@@ -848,7 +857,7 @@
       tips: [
         { t: 'Pause and continue', b: 'Tap to pause. Tap again to continue where it stopped.' },
         { t: 'Speed', b: 'Slower or faster — the change applies right away.' },
-        { t: 'Language and voice', b: 'Pick a voice for each language, or hear everything in one language.' },
+        { t: 'Language', b: 'Each sentence is read in its own language. To hear everything in one language, choose it here.' },
         { t: 'Tap a sentence', b: 'Read from any sentence, or choose where reading starts and ends.' },
         { t: 'Back to Home', b: 'Start something new from Home. Everything you open is kept in your library.' },
       ],
@@ -858,7 +867,7 @@
       helpTitle: 'Help',
       helpQA: [
         ['What can Listen read?', 'Text you type, paste or share from another app; TXT, Markdown, HTML, Word (.docx) and PDF files that contain text; photos and screenshots of printed text; web pages; and your own voice. Old Word files (.doc), EPUB books and scanned PDFs can’t be opened as files — photograph scanned pages instead.'],
-        ['A language has no voice, or sounds wrong', 'The voices come from your phone. Open Android Settings, search for “Text-to-speech output”, open the engine’s settings and install the voice data for that language, then reopen Listen. In Settings → Listening you can choose and try a voice for each language.'],
+        ['A language has no voice, or sounds wrong', 'Voices come from the phone’s speech engine. Google’s engine, on most Android phones, covers dozens of languages with no setup. If one is missing, open Android Settings, search for “Text-to-speech output” and add that language in the engine’s settings. In a computer browser, Google Chrome and Microsoft Edge come with online voices. To prefer another accent or voice, see Settings → Listening → Voices.'],
         ['Text in a photo isn’t recognised well', 'Use good light, hold the phone flat over the page, and fill the frame with the text. Set “Text language in photos” to the language on the page. Handwriting is usually not recognised. You can correct mistakes with ✎ Edit text.'],
         ['Does it keep reading with the screen off?', 'No. Listen reads only while it is on screen: if you switch to another app or lock the phone, reading pauses, and ▶ continues from where it stopped. With “Keep the screen on while reading” (Settings) the phone won’t lock by itself in the middle of a text.'],
         ['How do I hear everything in one language?', 'Open Language & voice in the player (or Settings → Listen in) and choose a language. Each sentence is translated by MyMemory, a free online service, and read in that language.'],
@@ -911,6 +920,8 @@
       listenHintTr: (l) => `每句先翻译成${l}再朗读。翻译由免费在线服务 MyMemory 完成，所以句子会发送给它。`,
       voiceFor: (l) => `${l}用哪个声音`, auto: '自动（最匹配）', preview: (l) => `试听${l}声音`,
       noVoice: (l) => `这台手机没有${l}语音。请在安卓「设置 → 文字转语音输出」里添加，然后重新打开本 App。`,
+      noVoiceWeb: (l) => `这个浏览器没有${l}语音。Google Chrome 和 Microsoft Edge 自带多种语言的在线语音；也可以在电脑的语音设置里添加。`,
+      voicesMore: '语音（可选）', voicesMoreD: '会按语言和你所在的地区自动选择。只有想换口音或声音时才需要设置。',
       defaultSpeed: '朗读语速', keepAwake: '朗读时屏幕保持常亮', keepAwakeD: '免得读到一半手机自动锁屏。',
       textSize: '字号', sizePreview: '敏捷的狐狸 · The quick brown fox', theme: '外观',
       themeSystem: '跟随手机', themeDark: '深色', themeLight: '浅色', uiLang: 'App 语言', langAuto: '自动',
@@ -935,7 +946,7 @@
       left: (m) => (m < 1 ? '剩不到 1 分钟' : `约剩 ${m} 分钟`),
       speed: '语速', rateText: (r) => `${r} 倍`, speedBtn: (r) => `语速 ${r}，点按修改`,
       speedHint: '修改后马上生效。', fineTune: '微调',
-      voiceBtn: '语言与声音', voiceSheet: '语言与声音',
+      voiceBtn: '朗读语言', voiceSheet: '朗读语言',
       nowVoice: (l, v) => `${l} · ${v}`, defaultVoice: '默认声音', jumpCurrent: '回到正在读的句子',
       miniClose: '关闭播放条', playing: '正在播放', paused: '已暂停', idle: '就绪',
       finishedMsg: '读完了。', stopped: '已停止。再按朗读会从头开始。',
@@ -992,7 +1003,7 @@
       tips: [
         { t: '暂停和继续', b: '点一下暂停，再点一下从停下的地方继续。' },
         { t: '语速', b: '调快或调慢，马上生效。' },
-        { t: '语言和声音', b: '给每种语言选声音，或者全部换成一种语言来听。' },
+        { t: '朗读语言', b: '每句按原文语言读。想全部换成一种语言听，就在这里选。' },
         { t: '点句子', b: '从任意一句开始读，或者设定从哪里开始、到哪里结束。' },
         { t: '回到首页', b: '在首页开始新的内容。打开过的内容都保存在书库里。' },
       ],
@@ -1002,7 +1013,7 @@
       helpTitle: '帮助',
       helpQA: [
         ['Listen 能读什么？', '你输入、粘贴或从其他 App 分享过来的文字；带文字的 TXT、Markdown、HTML、Word（.docx）和 PDF 文件；印刷文字的照片和截图；网页；还有你自己说的话。旧版 Word（.doc）、EPUB 电子书和扫描版 PDF 不能作为文件打开——扫描的页面请拍照识别。'],
-        ['某种语言没有声音，或者读得不对', '声音来自你的手机。打开安卓「设置」，搜索「文字转语音输出」，进入引擎设置安装该语言的语音数据，然后重新打开 Listen。在「设置 → 朗读」里可以给每种语言选择并试听声音。'],
+        ['某种语言没有声音，或者读得不对', '声音来自手机的语音引擎。大多数安卓手机上的 Google 语音引擎已经包含几十种语言，不用设置。如果缺某种语言，打开安卓「设置」，搜索「文字转语音输出」，在引擎设置里添加该语言。在电脑浏览器里，Google Chrome 和 Microsoft Edge 自带在线语音。想换口音或声音，见「设置 → 朗读 → 语音」。'],
         ['照片里的字识别得不好', '光线要充足，手机与纸面平行，让文字占满画面。把「图片里的文字语言」设成页面上的语言。手写字一般识别不了。识别错的字可以用 ✎ 编辑文字修改。'],
         ['熄屏后还会继续读吗？', '不会。Listen 只能在屏幕上打开时朗读：切换到其他 App 或锁屏，朗读就会暂停，回来点 ▶ 从停下的地方继续。打开「朗读时屏幕保持常亮」（在设置里），手机就不会读到一半自己锁屏。'],
         ['怎样把所有内容换成一种语言听？', '在播放器里打开「语言与声音」（或「设置 → 用哪种语言听」）选一种语言。每句会由免费在线服务 MyMemory 翻译，再用那种语言朗读。'],
@@ -1021,54 +1032,84 @@
       fbSubject: (x) => `Listen Everything 反馈——${x}`,
     },
   };
-  const LANG_NAMES = { en: 'English', zh: '中文', 'zh-CN': '简体中文', 'zh-TW': '繁體中文', ja: '日本語', ko: '한국어', es: 'Español', hi: 'हिन्दी', ru: 'Русский', ar: 'العربية', bn: 'বাংলা', pt: 'Português', fr: 'Français', de: 'Deutsch', th: 'ไทย', vi: 'Tiếng Việt', it: 'Italiano' };
-  const LISTEN_OPTIONS = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'es', 'hi', 'ru', 'ar', 'bn', 'pt', 'fr', 'de'];
-  const OCR_LANGS = [['chi_sim+eng', '中文 + English'], ['chi_tra+eng', '繁體中文 + English'], ['eng', 'English'], ['jpn+eng', '日本語 + English'], ['kor+eng', '한국어 + English'], ['rus+eng', 'Русский + English'], ['ara+eng', 'العربية + English'], ['hin+eng', 'हिन्दी + English'], ['spa+eng', 'Español + English'], ['por+eng', 'Português + English']];
-  const VOICE_SAMPLE = { en: 'Hello. This is how I sound.', zh: '你好，这是我的声音。', ja: 'こんにちは。これが私の声です。', ko: '안녕하세요. 제 목소리는 이렇습니다.', es: 'Hola. Así suena mi voz.', fr: 'Bonjour. Voici ma voix.', de: 'Hallo. So klingt meine Stimme.', pt: 'Olá. Esta é a minha voz.', ru: 'Здравствуйте. Так звучит мой голос.', ar: 'مرحبًا. هكذا يبدو صوتي.', hi: 'नमस्ते। मेरी आवाज़ ऐसी है।', bn: 'নমস্কার। আমার কণ্ঠস্বর এমন।', th: 'สวัสดี นี่คือเสียงของฉัน', vi: 'Xin chào. Đây là giọng của tôi.', it: 'Ciao. Questa è la mia voce.' };
+  const LANG_NAMES = { en: 'English', zh: '中文', 'zh-CN': '简体中文', 'zh-TW': '繁體中文', ja: '日本語', ko: '한국어', es: 'Español', hi: 'हिन्दी', ru: 'Русский', ar: 'العربية', bn: 'বাংলা', pt: 'Português', fr: 'Français', de: 'Deutsch', th: 'ไทย', vi: 'Tiếng Việt', it: 'Italiano',
+    id: 'Bahasa Indonesia', tr: 'Türkçe', pl: 'Polski', nl: 'Nederlands', sv: 'Svenska', fil: 'Filipino', cs: 'Čeština', ro: 'Română', hu: 'Magyar',
+    el: 'Ελληνικά', he: 'עברית', uk: 'Українська', sr: 'Српски', fa: 'فارسی', ur: 'اردو', pa: 'ਪੰਜਾਬੀ', gu: 'ગુજરાતી', ta: 'தமிழ்', te: 'తెలుగు',
+    kn: 'ಕನ್ನಡ', ml: 'മലയാളം', si: 'සිංහල', lo: 'ລາວ', my: 'မြန်မာ', ka: 'ქართული', am: 'አማርኛ', km: 'ខ្មែរ', hy: 'Հայերեն' };
+  const LISTEN_OPTIONS = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'es', 'hi', 'ru', 'ar', 'bn', 'pt', 'fr', 'de', 'vi', 'id'];
+  const OCR_LANGS = [['chi_sim+eng', '中文 + English'], ['chi_tra+eng', '繁體中文 + English'], ['eng', 'English'], ['jpn+eng', '日本語 + English'], ['kor+eng', '한국어 + English'], ['rus+eng', 'Русский + English'], ['ara+eng', 'العربية + English'], ['hin+eng', 'हिन्दी + English'], ['spa+eng', 'Español + English'], ['por+eng', 'Português + English'], ['vie+eng', 'Tiếng Việt + English'], ['ind+eng', 'Bahasa Indonesia + English']];
+  const VOICE_SAMPLE = { en: 'Hello. This is how I sound.', zh: '你好，这是我的声音。', ja: 'こんにちは。これが私の声です。', ko: '안녕하세요. 제 목소리는 이렇습니다.', es: 'Hola. Así suena mi voz.', fr: 'Bonjour. Voici ma voix.', de: 'Hallo. So klingt meine Stimme.', pt: 'Olá. Esta é a minha voz.', ru: 'Здравствуйте. Так звучит мой голос.', ar: 'مرحبًا. هكذا يبدو صوتي.', hi: 'नमस्ते। मेरी आवाज़ ऐसी है।', bn: 'নমস্কার। আমার কণ্ঠস্বর এমন।', th: 'สวัสดี นี่คือเสียงของฉัน', vi: 'Xin chào. Đây là giọng của tôi.', it: 'Ciao. Questa è la mia voce.',
+    id: 'Halo. Beginilah suara saya.', tr: 'Merhaba. Sesim böyle.', pl: 'Cześć. Tak brzmi mój głos.', nl: 'Hallo. Zo klinkt mijn stem.', sv: 'Hej. Så här låter min röst.',
+    uk: 'Привіт. Так звучить мій голос.', el: 'Γεια σας. Έτσι ακούγεται η φωνή μου.', he: 'שלום. כך נשמע הקול שלי.', fil: 'Kumusta. Ganito ang boses ko.', cs: 'Ahoj. Takhle zní můj hlas.',
+    ro: 'Bună. Așa sună vocea mea.', hu: 'Szia. Így hangzik a hangom.', sr: 'Здраво.', fa: 'سلام.', ur: 'ہیلو۔', pa: 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ।', gu: 'નમસ્તે.', ta: 'வணக்கம்.', te: 'నమస్కారం.',
+    kn: 'ನಮಸ್ಕಾರ.', ml: 'നമസ്കാരം.', si: 'ආයුබෝවන්.', lo: 'ສະບາຍດີ.', my: 'မင်္ဂလာပါ။', ka: 'გამარჯობა.', am: 'ሰላም።', km: 'សួស្តី។', hy: 'Բարև։' };
 
   // ---------- pure text helpers (web/tests/core.test.mjs runs this block directly) ----------
   // Language by script: what the voice needs to know to pick the right one.
+  // The script settles most languages on its own; within a script a few
+  // letters settle more (Ukrainian ї, Urdu ے, Persian پ), and Latin-script
+  // languages are told apart by their commonest words (latinLanguage, below).
+  const SCRIPTS = [
+    ['ko', /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g], ['cyr', /[\u0400-\u04ff]/g], ['el', /[\u0370-\u03ff\u1f00-\u1fff]/g],
+    ['he', /[\u0590-\u05ff]/g], ['arab', /[\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff]/g], ['hi', /[\u0900-\u097f]/g],
+    ['bn', /[\u0980-\u09ff]/g], ['pa', /[\u0a00-\u0a7f]/g], ['gu', /[\u0a80-\u0aff]/g], ['ta', /[\u0b80-\u0bff]/g],
+    ['te', /[\u0c00-\u0c7f]/g], ['kn', /[\u0c80-\u0cff]/g], ['ml', /[\u0d00-\u0d7f]/g], ['si', /[\u0d80-\u0dff]/g],
+    ['th', /[\u0e00-\u0e7f]/g], ['lo', /[\u0e80-\u0eff]/g], ['my', /[\u1000-\u109f]/g], ['ka', /[\u10a0-\u10ff]/g],
+    ['am', /[\u1200-\u137f]/g], ['km', /[\u1780-\u17ff]/g], ['hy', /[\u0530-\u058f]/g],
+  ];
+  // Characters written differently in Traditional and Simplified Chinese.
+  const ZH_TRAD = '們這個來說為會對時過發後學麼現當沒動還進樣經開從實軍無與長機點業兩間問題體關頭東車書認話電門員義華聽見覺幾師讓區應數變條聲將記處邊報總務設類種給運親萬氣專張單產據觀請網號歡語圖國';
+  const ZH_SIMP = '们这个来说为会对时过发后学么现当没动还进样经开从实军无与长机点业两间问题体关头东车书认话电门员义华听见觉几师让区应数变条声将记处边报总务设类种给运亲万气专张单产据观请网号欢语图国';
   function detect(text) {
     const count = (re) => (text.match(re) || []).length;
-    const han = count(/[一-鿿]/g), kana = count(/[぀-ヿ]/g), hangul = count(/[가-힯]/g);
-    const cyr = count(/[Ѐ-ӿ]/g), arab = count(/[؀-ۿ]/g), deva = count(/[ऀ-ॿ]/g), beng = count(/[ঀ-৿]/g), thai = count(/[฀-๿]/g);
-    const latin = count(/[A-Za-zÀ-ɏ]/g);
-    const best = Math.max(han + kana, hangul, cyr, arab, deva, beng, thai, latin);
-    if (best === 0) return 'en';
-    if (kana > 0 && kana + han >= best) return 'ja';
-    if (han >= best) return /[龘繁體語圖學國麼]/.test(text) ? 'zh-TW' : 'zh-CN';
-    if (hangul >= best) return 'ko';
-    if (cyr >= best) return 'ru';
-    if (arab >= best) return 'ar';
-    if (deva >= best) return 'hi';
-    if (beng >= best) return 'bn';
-    if (thai >= best) return 'th';
-    return latinLanguage(text);
+    const han = count(/[\u4e00-\u9fff\u3400-\u4dbf]/g), kana = count(/[\u3040-\u30ff]/g);
+    let best = 'latin', most = count(/[A-Za-z\u00c0-\u024f\u1e00-\u1eff]/g);
+    if (han + kana > most) { best = 'cjk'; most = han + kana; }
+    for (const [name, re] of SCRIPTS) { const n = count(re); if (n > most) { best = name; most = n; } }
+    if (most === 0) return 'en';
+    if (best === 'cjk') {
+      if (kana > 0) return 'ja';
+      const trad = [...text].filter((c) => ZH_TRAD.includes(c)).length, simp = [...text].filter((c) => ZH_SIMP.includes(c)).length;
+      return trad > simp ? 'zh-TW' : 'zh-CN';
+    }
+    if (best === 'cyr') return /[ґєії]/i.test(text) ? 'uk' : /[ђјљњћџ]/i.test(text) ? 'sr' : 'ru';
+    if (best === 'arab') return /[\u0679\u0688\u0691\u06ba\u06be\u06d2]/.test(text) ? 'ur' : /[\u067e\u0686\u0698\u06af\u06a9\u06cc]/.test(text) ? 'fa' : 'ar';
+    if (best === 'latin') return latinLanguage(text);
+    return best;
   }
   // Latin-script languages by their commonest small words, with letters only
   // one of them uses as extra evidence. Another language has to beat English
   // clearly, and be the only one that does, so an English sentence with a
   // borrowed word ("café", "la") stays English.
-  const LATIN_WORDS = {
-    en: 'the and is are was were of to in that it you for with on this be have not a an at as by from or',
-    es: 'el la los las de que y en un una por para con es del al se lo como más pero su sus muy está favor gracias hola',
-    fr: 'le la les de des et est un une du en que pour pas dans ce il elle je vous nous avec sur au aux merci très bonjour',
-    de: 'der die das und ist nicht ein eine zu den dem mit von sich auf für ich du sie es bitte danke auch noch',
-    pt: 'o a os as de que e do da dos das em um uma para com não por se mais muito obrigado você está',
-    it: 'il lo la gli le di che e un una per con non è sono della del grazie anche molto questo',
+  const LATIN = {
+    en: ['the and is are was were of to in that it you for with on this be have not a an at as by from or i he she we they my your his her our their what which who when where how can will would could should does did has had been there here about into just only also very some any all'],
+    es: ['el la los las de que y en un una por para con es del al se lo como más pero su sus muy está favor gracias hola', /[ñ¿¡]/],
+    fr: ['le la les de des et est un une du en que pour pas dans ce il elle je vous nous avec sur au aux merci très bonjour', /[œçèêëîïû]/],
+    de: ['der die das und ist nicht ein eine zu den dem mit von sich auf für ich du sie es bitte danke auch noch', /[äöüß]/],
+    pt: ['o a os as de que e do da dos das em um uma para com não por se mais muito obrigado você está eu', /[ãõ]/],
+    it: ['il lo la gli le di che e un una per con non è sono della del grazie anche molto questo', /[ìò]/],
+    vi: ['và của là có không được những cho này một người với các trong đã tôi bạn rất thì mà', /[ơưđ\u1ea0-\u1ef9]/],
+    id: ['yang dan di ke dari ini itu tidak untuk dengan adalah saya akan ada kami kita bisa juga sudah atau'],
+    tr: ['ve bir bu için değil ile çok var yok ben sen gibi daha', /[ğış]/],
+    pl: ['nie się jest że w na z do to jak ale czy tak jestem mnie', /[ąęłśźżńć]/],
+    nl: ['de het een en van niet ik zijn dat op te met voor maar ook wat er hij zij wij je is nog naar heb heeft mijn jij dit deze wordt'],
+    sv: ['och att det är inte jag på för med en som har vi du av till den om', /[å]/],
+    fil: ['ang ng sa mga na ay ako hindi ito siya ka mo ko kayo natin po'],
+    cs: ['je se na že to a v není jsem jak ale velmi ano ne jsou co nebo jako jen už ještě děkuji prosím', /[řěů]/],
+    ro: ['și este nu în de la cu un o pe care sunt mai', /[ăîâșț]/],
+    hu: ['és a az nem hogy egy van is de meg ez azt mit csak már még igen köszönöm szépen nagyon jó volt vagy kell mint ha', /[őű]/],
   };
-  const LATIN_SETS = Object.fromEntries(Object.entries(LATIN_WORDS).map(([k, v]) => [k, new Set(v.split(' '))]));
-  const LATIN_MARKS = { es: /[ñ¿¡]/, fr: /[œçèêëîïû]/, de: /[äöüß]/, pt: /[ãõ]/, it: /[ìò]/ };
+  const LATIN_SETS = Object.fromEntries(Object.entries(LATIN).map(([k, [w]]) => [k, new Set(w.split(' '))]));
   function latinLanguage(text) {
     const lower = text.toLowerCase();
-    const words = lower.match(/[a-zà-ÿœß]+/g) || [];
+    const words = lower.match(/\p{L}+/gu) || [];
     const score = {};
     for (const [lang, set] of Object.entries(LATIN_SETS)) score[lang] = words.filter((w) => set.has(w)).length;
-    for (const [lang, re] of Object.entries(LATIN_MARKS)) if (re.test(lower)) score[lang] += 2;
-    const others = ['es', 'fr', 'de', 'pt', 'it'].sort((a, b) => score[b] - score[a]);
+    for (const [lang, [, marks]] of Object.entries(LATIN)) if (marks && marks.test(lower)) score[lang] += 2;
+    const others = Object.keys(LATIN).filter((l) => l !== 'en').sort((a, b) => score[b] - score[a]);
     const [top, second] = others;
-    const need = words.length <= 3 ? 1 : 2;
-    return score[top] >= need && score[top] > score.en + (words.length <= 3 ? 0 : 1) && score[top] > score[second] ? top : 'en';
+    const short = words.length <= 3;
+    return score[top] >= (short ? 1 : 2) && score[top] > score.en + (short ? 0 : 1) && score[top] > score[second] ? top : 'en';
   }
 
   // Sentences by punctuation, never by line. Text with no sentence punctuation
@@ -1209,7 +1250,7 @@
   // Photo language follows the phone's language for new users, so English
   // users don't download Chinese recognition data on their first scan.
   const DEFAULT_OCR = ([[/^zh[-_](tw|hk|mo)|^zh[-_]hant/i, 'chi_tra+eng'], [/^zh/i, 'chi_sim+eng'], [/^ja/i, 'jpn+eng'], [/^ko/i, 'kor+eng'],
-    [/^ru/i, 'rus+eng'], [/^ar/i, 'ara+eng'], [/^hi/i, 'hin+eng'], [/^es/i, 'spa+eng'], [/^pt/i, 'por+eng']].find(([re]) => re.test(sysLang)) || [0, 'eng'])[1];
+    [/^ru/i, 'rus+eng'], [/^ar/i, 'ara+eng'], [/^hi/i, 'hin+eng'], [/^es/i, 'spa+eng'], [/^pt/i, 'por+eng'], [/^vi/i, 'vie+eng'], [/^(id|in)([-_]|$)/i, 'ind+eng']].find(([re]) => re.test(sysLang)) || [0, 'eng'])[1];
   const prefs = load('le-prefs', { size: 19, uiLang: 'auto', listenIn: '', ocrLang: DEFAULT_OCR, speakLang: 'auto', voices: {}, rate: 1, keepAwake: true, theme: 'system' });
   const onboard = load('le-onboard', { intro: false, tips: false, whatsNew: false });
   function saveOnboard() { try { localStorage.setItem('le-onboard', JSON.stringify(onboard)); } catch {} }
@@ -1727,20 +1768,25 @@
   const synth = window.speechSynthesis;
   let voices = [];
   function refreshVoices() { voices = synth ? synth.getVoices() : []; renderAllVoices(); if (sentences.length) warnIfNoVoice(); }
-  if (synth) { refreshVoices(); synth.onvoiceschanged = refreshVoices; }
 
   // Voice languages come as "en-US" on desktops and "en_US" or "zh_TW_#Hant" on
   // Android, so they are compared by their parts, never by prefix ("ko" is not
   // "kok", Konkani). A phone has several voices per language -- English from
   // Australia, Britain, India, Nigeria, the US -- so the region is chosen on
   // purpose: the text's own, else the phone's, else the most common one.
-  // (Function declarations: the voice list is first drawn during boot, above.)
   function normLang(l) { return String(l || '').toLowerCase().replace(/_/g, '-'); }
   function baseOf(l) { return normLang(l).split('-')[0]; }
-  const DEFAULT_REGION = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', zh: 'cn', ar: 'sa', bn: 'bd', hi: 'in', ko: 'kr', ja: 'jp', ru: 'ru', it: 'it', nl: 'nl', vi: 'vn', th: 'th' };
+  const DEFAULT_REGION = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', zh: 'cn', ar: 'sa', bn: 'bd', hi: 'in', ko: 'kr', ja: 'jp', ru: 'ru', it: 'it', nl: 'nl', vi: 'vn', th: 'th',
+    id: 'id', tr: 'tr', pl: 'pl', sv: 'se', uk: 'ua', el: 'gr', he: 'il', fil: 'ph', cs: 'cz', ro: 'ro', hu: 'hu', fa: 'ir', ur: 'pk', sr: 'rs' };
+  // Android still names some languages by their old codes: Hebrew "iw", Indonesian "in".
+  const VOICE_ALIAS = { he: ['he', 'iw'], id: ['id', 'in'], yi: ['yi', 'ji'], fil: ['fil', 'tl'] };
+  const ON_ANDROID = /Android/i.test(navigator.userAgent);
+  const noVoiceText = (l) => t(ON_ANDROID ? 'noVoice' : 'noVoiceWeb', l);
+  // The first voice list arrives now, so everything it uses must be defined above.
+  if (synth) { refreshVoices(); synth.onvoiceschanged = refreshVoices; }
   function voicesFor(lang) {
-    const base = baseOf(lang);
-    const list = voices.filter((v) => baseOf(v.lang) === base);
+    const base = baseOf(lang), codes = VOICE_ALIAS[base] || [base];
+    const list = voices.filter((v) => codes.includes(baseOf(v.lang)));
     if (base === 'zh') {
       const trad = /tw|hk|mo|hant/i.test(lang);
       const sub = list.filter((v) => (trad ? /tw|hk|mo|hant/i.test(v.lang) && !/hans/i.test(v.lang) : /cn|sg|my|hans/i.test(v.lang) && !/hant/i.test(v.lang)));
@@ -1767,7 +1813,7 @@
   }
   function warnIfNoVoice() {
     const missing = languagesInUse().filter((l) => !voicesFor(l).length);
-    if (missing.length && voices.length) showBanner(t('noVoice', missing.map(langName).join(', ')));
+    if (missing.length && voices.length) showBanner(noVoiceText(missing.map(langName).join(', ')));
   }
   function showBanner(msg) { $('bannerMsg').textContent = msg; $('banner').hidden = false; }
   $('bannerClose').onclick = () => { $('banner').hidden = true; };
@@ -1962,7 +2008,8 @@
   async function translate(text, from, to) {
     const key = `${from}|${to}|${text}`;
     if (trCache.has(key)) return trCache.get(key);
-    const src = from.split('-')[0] === 'zh' ? (from.includes('TW') ? 'zh-TW' : 'zh-CN') : from.split('-')[0];
+    const MM = { fil: 'tl' };
+    const src = from.split('-')[0] === 'zh' ? (from.includes('TW') ? 'zh-TW' : 'zh-CN') : MM[from.split('-')[0]] || from.split('-')[0];
     const out = [];
     try {
       // One request takes at most 500 characters: longer text goes in pieces, in order.
@@ -2233,7 +2280,7 @@
   function dictationLang() {
     if (prefs.speakLang !== 'auto') return prefs.speakLang;
     const l = sysLang;
-    return l.length === 2 ? { zh: 'zh-CN', en: 'en-US', ja: 'ja-JP', ko: 'ko-KR', es: 'es-ES', pt: 'pt-BR', fr: 'fr-FR', de: 'de-DE', ru: 'ru-RU', ar: 'ar-SA', hi: 'hi-IN' }[l] || l : l;
+    return l.length === 2 ? { zh: 'zh-CN', en: 'en-US', ja: 'ja-JP', ko: 'ko-KR', es: 'es-ES', pt: 'pt-BR', fr: 'fr-FR', de: 'de-DE', ru: 'ru-RU', ar: 'ar-SA', hi: 'hi-IN', vi: 'vi-VN', id: 'id-ID', in: 'id-ID' }[l] || l : l;
   }
   function punctuate(fragment, lang) {
     const s = fragment.trim();
@@ -2452,29 +2499,30 @@
     for (const l of voiceLangs()) {
       const list = voicesFor(l), id = `${box.id}-${l}`;
       const wrap = document.createElement('div');
-      wrap.className = box.id === 'sheetVoices' ? 'field bare' : 'field';
+      wrap.className = 'field';
       wrap.innerHTML = `<label for="${id}">${esc(t('voiceFor', langName(l)))}</label><div class="inline"><select id="${id}"></select><button class="ibtn" type="button" aria-label="${esc(t('preview', langName(l)))}">${ic('play')}</button></div>`;
       const sel = wrap.querySelector('select');
       sel.innerHTML = `<option value="">${esc(t('auto'))}</option>` + list.map((v) => `<option value="${esc(v.voiceURI)}">${esc(v.name)} (${esc(v.lang)})</option>`).join('');
       sel.value = prefs.voices[l] || '';
-      sel.onchange = () => {
-        prefs.voices[l] = sel.value; save();
-        const twin = $(`${box.id === 'setVoices' ? 'sheetVoices' : 'setVoices'}-${l}`);
-        if (twin) twin.value = sel.value;
-        restartCurrent(true);
-      };
+      sel.onchange = () => { prefs.voices[l] = sel.value; save(); restartCurrent(true); };
       wrap.querySelector('button').onclick = () => previewVoice(l);
       if (!list.length && voices.length) {
         const w = document.createElement('p');
         w.className = 'warn';
         w.innerHTML = ic('alert') + '<span></span>';
-        w.lastChild.textContent = t('noVoice', langName(l));
+        w.lastChild.textContent = noVoiceText(langName(l));
         wrap.appendChild(w);
       }
       box.appendChild(wrap);
     }
   }
-  function renderAllVoices() { renderVoices($('setVoices')); renderVoices($('sheetVoices')); }
+  function renderAllVoices() {
+    renderVoices($('setVoices'));
+    const missing = voices.length ? languagesInUse().filter((l) => !voicesFor(l).length) : [];
+    const w = $('sheetVoiceWarn');
+    w.hidden = !missing.length;
+    if (missing.length) { w.innerHTML = ic('alert') + '<span></span>'; w.lastChild.textContent = noVoiceText(missing.map(langName).join(', ')); }
+  }
   function previewVoice(l) {
     if (!synth) return;
     if (state === 'playing') pause();
