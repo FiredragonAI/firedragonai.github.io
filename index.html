@@ -659,10 +659,10 @@
   <label class="checkrow" for="fbSentence"><input type="checkbox" id="fbSentence"><span><span data-i18n="fbSentence">Include the sentence being read</span><small data-i18n="fbSentenceD"></small></span></label>
   <h3 class="hint" id="fbPrevH" data-i18n="fbPreview">What will be sent</h3>
   <pre class="preview" id="fbPreview" aria-labelledby="fbPrevH" tabindex="0"></pre>
-  <p class="hint" id="fbPrivacy" style="margin-top:.75rem"></p>
+  <p class="hint" id="fbPrivacy" style="margin-top:.75rem" data-i18n="fbPrivacy"></p>
   <div class="btnrow">
     <button class="btn" id="fbCopy" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="fbCopy">Copy the message</span></button>
-    <button class="btn primary" id="fbSend" type="button"><svg class="icon" aria-hidden="true"><use href="#i-message"/></svg><span data-i18n="fbSend">Open email app</span></button>
+    <button class="btn primary" id="fbPlay" type="button"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="fbPlay">Copy and open Google Play</span></button>
   </div>
 </div>
 
@@ -720,10 +720,10 @@
   'use strict';
 
   const APP_VERSION = '1.1.0';
-  // Where "Send feedback" addresses its email. While this is empty the feedback
-  // form offers "Copy the message" only, and says where to send it instead.
-  const FEEDBACK_EMAIL = '';
   const SITE = 'https://firedragonai.github.io/';
+  // Feedback goes through the developer contact on the Play page: no address is
+  // built into the app.
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=io.github.firedragonai.listen';
   // ?selftest: silent voices, a separate library database, and the helpers on
   // window.LE_TEST, so the page can be driven by tests without touching real data.
   const TEST = /[?&]selftest\b/.test(location.search);
@@ -871,10 +871,9 @@
       fbPh: { bug: 'What did you do, what happened, and what did you expect?', idea: 'What would make Listen more useful to you?', voice: 'Which language or voice, and what sounded wrong?', ocr: 'What kind of text (printed, screen, handwriting), and which language?', other: 'Tell us anything.' },
       fbDevice: 'Include app and device details', fbSentence: 'Include the sentence being read', fbSentenceD: 'Off unless you turn it on — it may be private.',
       fbPreview: 'What will be sent', fbDeviceHead: 'App and device', fbSentenceLabel: 'Sentence being read',
-      fbPrivacy: 'The app sends nothing by itself. Your email app opens with this message, and you decide whether to send it. To show a photo, attach it there yourself — only if you want to.',
-      fbPrivacyCopy: 'The app sends nothing by itself. Copy the message and email it to the developer address shown on Listen’s Google Play page.',
-      fbSend: 'Open email app', fbCopy: 'Copy the message', fbCopied: 'Copied — paste it into an email.', fbEmpty: 'Write a message first.',
-      fbNoApp: 'If no email app opened, use Copy the message.', fbSubject: (x) => `Listen Everything feedback — ${x}`,
+      fbPrivacy: 'The app sends nothing by itself. The message is copied, and you send it yourself to the developer contact on Listen’s Google Play page. To show a photo, attach it there yourself — only if you want to.',
+      fbPlay: 'Copy and open Google Play', fbCopy: 'Copy the message', fbCopied: 'Copied — paste it into a message to the developer.', fbEmpty: 'Write a message first.',
+      fbSubject: (x) => `Listen Everything feedback — ${x}`,
     },
     zh: {
       tabsLabel: '主导航', tabHome: '首页', tabLibrary: '书库', tabSettings: '设置',
@@ -1015,10 +1014,9 @@
       fbPh: { bug: '你做了什么？发生了什么？你本来期望怎样？', idea: '什么能让 Listen 对你更有用？', voice: '哪种语言或哪个声音？哪里听起来不对？', ocr: '什么样的文字（印刷、屏幕、手写）？什么语言？', other: '什么都可以说。' },
       fbDevice: '附上 App 和设备信息', fbSentence: '附上正在朗读的句子', fbSentenceD: '默认不附带——它可能是私人内容。',
       fbPreview: '将要发送的内容', fbDeviceHead: 'App 与设备', fbSentenceLabel: '正在朗读的句子',
-      fbPrivacy: 'App 自己不会发送任何东西。会打开你的邮件 App 并填好这封邮件，由你决定是否发送。想附上图片，请在邮件里自己添加——只在你愿意时。',
-      fbPrivacyCopy: 'App 自己不会发送任何东西。请复制这段内容，发到 Listen 在 Google Play 页面上显示的开发者邮箱。',
-      fbSend: '打开邮件 App', fbCopy: '复制内容', fbCopied: '已复制，粘贴到邮件里即可。', fbEmpty: '请先写点内容。',
-      fbNoApp: '如果没有打开邮件 App，请用「复制内容」。', fbSubject: (x) => `Listen Everything 反馈——${x}`,
+      fbPrivacy: 'App 自己不会发送任何东西。内容会被复制，由你自己发给 Listen 在 Google Play 页面上的开发者联系方式。想附上图片，请自己添加——只在你愿意时。',
+      fbPlay: '复制并打开 Google Play', fbCopy: '复制内容', fbCopied: '已复制，粘贴到发给开发者的消息里即可。', fbEmpty: '请先写点内容。',
+      fbSubject: (x) => `Listen Everything 反馈——${x}`,
     },
   };
   const LANG_NAMES = { en: 'English', zh: '中文', 'zh-CN': '简体中文', 'zh-TW': '繁體中文', ja: '日本語', ko: '한국어', es: 'Español', hi: 'हिन्दी', ru: 'Русский', ar: 'العربية', bn: 'বাংলা', pt: 'Português', fr: 'Français', de: 'Deutsch', th: 'ไทย', vi: 'Tiếng Việt', it: 'Italiano' };
@@ -2567,9 +2565,6 @@
     $('fbErr').textContent = '';
     $('fbSentence').checked = false;
     $('fbSentence').disabled = !sentences.length;
-    $('fbSend').hidden = !FEEDBACK_EMAIL;
-    $('fbCopy').classList.toggle('primary', !FEEDBACK_EMAIL);
-    $('fbPrivacy').textContent = FEEDBACK_EMAIL ? t('fbPrivacy') : t('fbPrivacyCopy');
     if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
       navigator.userAgentData.getHighEntropyValues(['platformVersion', 'model']).then((h) => { uaHints = h || {}; updateFbPreview(); }).catch(() => {});
     }
@@ -2586,24 +2581,24 @@
     $('fbMsg').focus();
     return false;
   }
-  $('fbSend').onclick = () => {
-    if (!FEEDBACK_EMAIL || !fbReady()) return;
-    const a = document.createElement('a');
-    a.href = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(fbSubject())}&body=${encodeURIComponent(fbBody())}`;
-    a.click();
-    setTimeout(() => toast(t('fbNoApp')), 1500);
-  };
-  $('fbCopy').onclick = async () => {
-    if (!fbReady()) return;
+  async function copyFeedback() {
     const text = `${fbSubject()}\n\n${fbBody()}`;
-    try { await navigator.clipboard.writeText(text); }
+    try { await navigator.clipboard.writeText(text); return true; }
     catch {
       const ta = document.createElement('textarea');
       ta.value = text; document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); } catch {}
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch {}
       ta.remove();
+      return ok;
     }
-    toast(t('fbCopied'));
+  }
+  $('fbCopy').onclick = async () => { if (fbReady() && await copyFeedback()) toast(t('fbCopied')); };
+  // The developer's contact address is on the Play page, not in the app.
+  $('fbPlay').onclick = async () => {
+    if (!fbReady()) return;
+    if (await copyFeedback()) toast(t('fbCopied'));
+    window.open(PLAY_URL, '_blank', 'noopener');
   };
 
   // ---------- first run: a short introduction, an example that plays at once, tips on the real buttons ----------

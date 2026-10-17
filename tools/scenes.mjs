@@ -18,4 +18,4 @@ export const SCENES = {
   feedback: `document.getElementById('btnFeedback').click(); await new Promise(r => setTimeout(r, 300));`,
 };
 
-export const BASE = 'http://localhost:8771/?selftest';
+export const BASE = process.env.LE_BASE || 'http://localhost:8771/?selftest';
