@@ -73,7 +73,7 @@ export async function withPage({ width = 360, height = 640, scale = 3, mobile = 
       async init(source) { await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source }); },
       // Runs an async function body in the page and returns its JSON result.
       async run(body) {
-        const r = await cdp.send('Runtime.evaluate', { expression: `(async () => { ${body} })()`, awaitPromise: true, returnByValue: true });
+        const r = await cdp.send('Runtime.evaluate', { expression: `(async () => { ${body} })()`, awaitPromise: true, returnByValue: true, userGesture: true });
         if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
         return r.result.value;
       },

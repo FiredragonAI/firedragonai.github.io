@@ -795,6 +795,7 @@
       miniClose: 'Close the player', playing: 'Playing', paused: 'Paused', idle: 'Ready',
       finishedMsg: 'Finished.', stopped: 'Stopped. Read aloud starts again from the beginning.',
       resumedAt: (i) => `Continuing from sentence ${i}`, tapToStart: 'Tap ▶ to start reading.',
+      interrupted: 'The phone paused the reading. Tap ▶ to continue.', interruptedAway: 'Reading paused when Listen left the screen — it reads only while it’s open. Tap ▶ to continue.',
       noSynth: 'This browser can’t read aloud.', voiceErr: (e) => `The voice reported an error (${e}); skipping to the next sentence.`,
       quota: 'The free translator’s daily limit is used up; reading the original for now.',
       trFail: 'Translation isn’t available right now; reading the original.',
@@ -859,7 +860,7 @@
         ['What can Listen read?', 'Text you type, paste or share from another app; TXT, Markdown, HTML, Word (.docx) and PDF files that contain text; photos and screenshots of printed text; web pages; and your own voice. Old Word files (.doc), EPUB books and scanned PDFs can’t be opened as files — photograph scanned pages instead.'],
         ['A language has no voice, or sounds wrong', 'The voices come from your phone. Open Android Settings, search for “Text-to-speech output”, open the engine’s settings and install the voice data for that language, then reopen Listen. In Settings → Listening you can choose and try a voice for each language.'],
         ['Text in a photo isn’t recognised well', 'Use good light, hold the phone flat over the page, and fill the frame with the text. Set “Text language in photos” to the language on the page. Handwriting is usually not recognised. You can correct mistakes with ✎ Edit text.'],
-        ['Does it keep reading with the screen off?', 'Keep Listen open while it reads. With “Keep the screen on while reading” (Settings) the phone won’t lock in the middle of a text. If you switch apps or lock the phone, reading may stop; tap ▶ to continue where it stopped.'],
+        ['Does it keep reading with the screen off?', 'No. Listen reads only while it is on screen: if you switch to another app or lock the phone, reading pauses, and ▶ continues from where it stopped. With “Keep the screen on while reading” (Settings) the phone won’t lock by itself in the middle of a text.'],
         ['How do I hear everything in one language?', 'Open Language & voice in the player (or Settings → Listen in) and choose a language. Each sentence is translated by MyMemory, a free online service, and read in that language.'],
         ['Does it work offline?', 'Once opened, the app starts without the internet, and texts in your library can be read with your phone’s voices. Web pages, translation, and the first use of photo recognition or of PDF and Word files need a connection.'],
         ['Where is my library kept, and what leaves my phone?', 'The library is kept only on this phone; uninstalling the app, clearing its storage, or Settings → Clear the library deletes it. Nothing you read leaves the phone except a web page’s address (sent to r.jina.ai), sentences you choose to hear translated (sent to MyMemory), and speech input (handled by your browser’s speech service).'],
@@ -939,6 +940,7 @@
       miniClose: '关闭播放条', playing: '正在播放', paused: '已暂停', idle: '就绪',
       finishedMsg: '读完了。', stopped: '已停止。再按朗读会从头开始。',
       resumedAt: (i) => `从第 ${i} 句接着读`, tapToStart: '点 ▶ 开始朗读。',
+      interrupted: '朗读被系统暂停了。点 ▶ 继续。', interruptedAway: 'Listen 离开屏幕时朗读暂停了——它只能在打开时朗读。点 ▶ 继续。',
       noSynth: '这个浏览器不能朗读。', voiceErr: (e) => `语音出错（${e}），跳到下一句。`,
       quota: '免费翻译今日额度已用完，暂时按原文朗读。', trFail: '暂时无法翻译，按原文朗读。',
 
@@ -1002,7 +1004,7 @@
         ['Listen 能读什么？', '你输入、粘贴或从其他 App 分享过来的文字；带文字的 TXT、Markdown、HTML、Word（.docx）和 PDF 文件；印刷文字的照片和截图；网页；还有你自己说的话。旧版 Word（.doc）、EPUB 电子书和扫描版 PDF 不能作为文件打开——扫描的页面请拍照识别。'],
         ['某种语言没有声音，或者读得不对', '声音来自你的手机。打开安卓「设置」，搜索「文字转语音输出」，进入引擎设置安装该语言的语音数据，然后重新打开 Listen。在「设置 → 朗读」里可以给每种语言选择并试听声音。'],
         ['照片里的字识别得不好', '光线要充足，手机与纸面平行，让文字占满画面。把「图片里的文字语言」设成页面上的语言。手写字一般识别不了。识别错的字可以用 ✎ 编辑文字修改。'],
-        ['熄屏后还会继续读吗？', '朗读时请让 Listen 保持在前台。打开「朗读时屏幕保持常亮」（在设置里），手机就不会读到一半锁屏。如果切换到其他 App 或锁屏，朗读可能会停下；回来点 ▶ 就从停下的地方继续。'],
+        ['熄屏后还会继续读吗？', '不会。Listen 只能在屏幕上打开时朗读：切换到其他 App 或锁屏，朗读就会暂停，回来点 ▶ 从停下的地方继续。打开「朗读时屏幕保持常亮」（在设置里），手机就不会读到一半自己锁屏。'],
         ['怎样把所有内容换成一种语言听？', '在播放器里打开「语言与声音」（或「设置 → 用哪种语言听」）选一种语言。每句会由免费在线服务 MyMemory 翻译，再用那种语言朗读。'],
         ['没有网络能用吗？', '打开过一次之后，没有网络也能启动，书库里的文字可以用手机的声音朗读。网页、翻译，以及第一次使用图片识字或打开 PDF、Word 文件时需要联网。'],
         ['书库存在哪里？哪些内容会离开手机？', '书库只保存在这台手机上；卸载 App、清除它的存储，或在「设置 → 清空书库」都会删除它。你读的内容不会离开手机，除了：网页的地址（发送给 r.jina.ai）、你选择翻译的句子（发送给 MyMemory）、语音输入（由浏览器的语音服务处理）。'],
@@ -1706,22 +1708,35 @@
   function refreshVoices() { voices = synth ? synth.getVoices() : []; renderAllVoices(); if (sentences.length) warnIfNoVoice(); }
   if (synth) { refreshVoices(); synth.onvoiceschanged = refreshVoices; }
 
+  // Voice languages come as "en-US" on desktops and "en_US" or "zh_TW_#Hant" on
+  // Android, so they are compared by their parts, never by prefix ("ko" is not
+  // "kok", Konkani). A phone has several voices per language -- English from
+  // Australia, Britain, India, Nigeria, the US -- so the region is chosen on
+  // purpose: the text's own, else the phone's, else the most common one.
+  // (Function declarations: the voice list is first drawn during boot, above.)
+  function normLang(l) { return String(l || '').toLowerCase().replace(/_/g, '-'); }
+  function baseOf(l) { return normLang(l).split('-')[0]; }
+  const DEFAULT_REGION = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', zh: 'cn', ar: 'sa', bn: 'bd', hi: 'in', ko: 'kr', ja: 'jp', ru: 'ru', it: 'it', nl: 'nl', vi: 'vn', th: 'th' };
   function voicesFor(lang) {
-    const base = lang.split('-')[0].toLowerCase();
-    const list = voices.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith(base));
+    const base = baseOf(lang);
+    const list = voices.filter((v) => baseOf(v.lang) === base);
     if (base === 'zh') {
-      const trad = lang.includes('TW') || lang.includes('Hant') || lang.includes('HK');
-      const sub = list.filter((v) => (trad ? /tw|hk|hant/i.test(v.lang) : /cn|hans|sg/i.test(v.lang)));
+      const trad = /tw|hk|mo|hant/i.test(lang);
+      const sub = list.filter((v) => (trad ? /tw|hk|mo|hant/i.test(v.lang) && !/hans/i.test(v.lang) : /cn|sg|my|hans/i.test(v.lang) && !/hant/i.test(v.lang)));
       if (sub.length) return sub;
     }
     return list;
   }
   function pickVoice(lang) {
-    const chosen = prefs.voices[lang.split('-')[0]];
+    const chosen = prefs.voices[baseOf(lang)];
     if (chosen) { const v = voices.find((x) => x.voiceURI === chosen); if (v) return v; }
     const list = voicesFor(lang);
     if (!list.length) return null;
-    const score = (v) => (/natural|premium|enhanced|neural/i.test(v.name) ? 4 : 0) + (/google|microsoft|siri|apple/i.test(v.name) ? 2 : 0) + (v.lang.toLowerCase() === lang.toLowerCase() ? 1 : 0);
+    const base = baseOf(lang);
+    const own = (navigator.languages || [navigator.language]).map(normLang).find((l) => baseOf(l) === base);
+    const region = normLang(lang).split('-')[1] || (own && own.split('-')[1]) || DEFAULT_REGION[base] || '';
+    const score = (v) => (/natural|premium|enhanced|neural/i.test(v.name) ? 4 : 0) + (/google|microsoft|siri|apple/i.test(v.name) ? 2 : 0)
+      + (region && normLang(v.lang).split('-')[1] === region ? 3 : 0);
     return list.slice().sort((a, b) => score(b) - score(a))[0];
   }
   function languagesInUse() {
@@ -1757,9 +1772,10 @@
       u.lang = v ? v.lang : lang;
       u.rate = prefs.rate;
       if (TEST) u.volume = 0;
-      lastBoundary = { i, text, char: from };
+      lastBoundary = null; speakingNow = null;
+      u.onstart = () => { speakingNow = { i, text, from, at: performance.now(), rate: u.rate, lang: baseOf(lang) }; };
       u.onboundary = (e) => { if (typeof e.charIndex === 'number' && e.name !== 'sentence') lastBoundary = { i, text, char: from + e.charIndex }; };
-      u.onend = () => resolve(true);
+      u.onend = () => { learnPace(i); resolve(true); };
       u.onerror = (e) => {
         if (e.error === 'interrupted' || e.error === 'canceled') return resolve(null);
         if (e.error === 'not-allowed') return resolve('blocked');
@@ -1772,13 +1788,53 @@
     });
   }
 
+  // Where in the current sentence speech has got to. Engines that report word
+  // boundaries (desktop Chrome) say so exactly. Android's engine reports none, so
+  // there the place is estimated from the time spoken and this phone's own pace,
+  // measured on the sentences it finished, and moved back a second: hearing a
+  // few words twice is better than missing them.
+  let speakingNow = null;
+  const pace = {};
+  function learnPace(i) {
+    const s = speakingNow;
+    if (!s || s.i !== i) return;
+    const secs = (performance.now() - s.at) / 1000, chars = s.text.length - s.from;
+    if (secs < 1.5 || chars < 15) return;
+    const cps = chars / secs / s.rate;
+    pace[s.lang] = pace[s.lang] ? pace[s.lang] * 0.7 + cps * 0.3 : cps;
+  }
+  function placeNow() {
+    if (lastBoundary && lastBoundary.i === position) return lastBoundary.char > 0 ? Object.assign({}, lastBoundary) : null;
+    const s = speakingNow;
+    if (!s || s.i !== position) return null;
+    const keep = s.from > 0 ? { i: s.i, text: s.text, char: s.from } : null;
+    const secs = (performance.now() - s.at) / 1000 - 1;
+    if (secs <= 0) return keep;
+    const cps = pace[s.lang] || (/^(zh|ja|ko)$/.test(s.lang) ? 4.5 : 14);
+    let char = Math.min(s.text.length - 1, s.from + Math.floor(secs * cps * s.rate));
+    // Back to the start of the word, where words are separated by spaces.
+    if (!/[぀-ヿ㐀-鿿]/.test(s.text[char])) while (char > s.from && !/\s/.test(s.text[char - 1])) char--;
+    return char > s.from ? { i: s.i, text: s.text, char } : keep;
+  }
+
+  // The system stopped speech: Chrome does when the app leaves the screen or the
+  // phone locks. Become paused where it stopped, and say why once it is back.
+  let stoppedWhileAway = false;
+  function interrupted() {
+    resumeAt = placeNow();
+    state = 'paused';
+    updatePlayer(); markSpeaking(false); releaseWakeLock(); saveProgress(true);
+    if (document.visibilityState === 'hidden') stoppedWhileAway = true; else toast(t('interrupted'));
+  }
+
   async function run(gen) {
     state = 'playing';
     updatePlayer(); markSpeaking(); acquireWakeLock();
     while (gen === generation && position <= Math.min(endIdx, sentences.length - 1)) {
       updatePlayer(); markSpeaking(); saveProgress(false);
       const ok = await speakSentence(position, gen);
-      if (gen !== generation || ok === null) return;   // interrupted: whoever did it owns the state
+      if (gen !== generation) return;                    // stopped by us: whoever did it owns the state
+      if (ok === null) { interrupted(); return; }        // stopped by the system
       if (ok === 'blocked' || ok === 'stop') {
         // Speech needs a tap first (e.g. a text shared in from another app).
         state = ok === 'blocked' ? 'paused' : 'idle';
@@ -1815,7 +1871,7 @@
   }
   function pause() {
     if (state !== 'playing') return;
-    if (lastBoundary && lastBoundary.i === position && lastBoundary.char > 0) resumeAt = Object.assign({}, lastBoundary);
+    resumeAt = placeNow();
     generation++;
     if (synth) synth.cancel();
     state = 'paused';
@@ -1848,7 +1904,7 @@
   // Re-speak the current sentence with new settings (speed, voice, language).
   function restartCurrent(keepPlace) {
     if (state !== 'playing') return;
-    if (keepPlace && lastBoundary && lastBoundary.i === position) resumeAt = Object.assign({}, lastBoundary);
+    if (keepPlace) resumeAt = placeNow();
     generation++;
     if (synth) synth.cancel();
     run(generation);
@@ -1874,8 +1930,9 @@
   }
   function releaseWakeLock() { const l = wakeLock; wakeLock = null; if (l) l.release().catch(() => {}); }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') saveProgress(true);
-    else if (state === 'playing') acquireWakeLock();
+    if (document.visibilityState === 'hidden') { saveProgress(true); return; }
+    if (state === 'playing') acquireWakeLock();
+    if (stoppedWhileAway) { stoppedWhileAway = false; toast(t('interruptedAway')); }
   });
   addEventListener('pagehide', () => saveProgress(true));
 
