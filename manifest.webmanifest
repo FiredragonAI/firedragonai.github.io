@@ -1,7 +1,7 @@
 {
   "name": "Listen Everything",
   "short_name": "Listen",
-  "description": "Read anything aloud — typed or pasted text, PDF and Word files, photos of pages, web pages — in any language, with your device's own voices.",
+  "description": "Read anything aloud — typed or pasted text, PDF and Word files, photos of pages, web pages — in many languages, with your device's own voices.",
   "id": "/",
   "start_url": "./",
   "scope": "./",
